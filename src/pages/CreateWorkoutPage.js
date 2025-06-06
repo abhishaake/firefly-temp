@@ -153,7 +153,7 @@ export const CreateWorkoutPage = () => {
         }));
         const payload = { name, description, roundRequests };
         try {
-            const response = await fetch('http://localhost:8080/api/v1/workouts', {
+            const response = await fetch('https://firefly-admin.cozmotech.ie/api/v1/workouts', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
