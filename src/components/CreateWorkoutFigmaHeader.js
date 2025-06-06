@@ -1,0 +1,4 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import React from 'react';
+import '../styles/workout.css';
+export const CreateWorkoutFigmaHeader = ({ workoutRounds = [], selectedRoundIndex, onRoundSelect, onAddRound }) => (_jsxs("div", { className: "figma-header-row", children: [_jsxs("div", { className: "figma-header-left", children: [workoutRounds.map((round, idx) => (_jsx("div", { className: `figma-header-card${selectedRoundIndex === round.sequenceNo ? ' filled' : ' outlined'}`, onClick: () => onRoundSelect && onRoundSelect(round, round.sequenceNo), style: { cursor: 'pointer' }, children: round.name }, round.name + idx))), _jsx("div", { className: "figma-header-plus", onClick: () => onAddRound && onAddRound(), style: { cursor: 'pointer' }, children: _jsx("span", { children: "+" }) })] }), _jsx("div", { className: "figma-header-menu", children: _jsx("span", { children: "\u22EE" }) })] }));

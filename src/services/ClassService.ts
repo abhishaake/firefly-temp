@@ -4,7 +4,7 @@ import type { ClassItem } from '../types/class';
 
 const mockClasses: ClassItem[] = [
   {
-    id: '1',
+    classId: '1',
     className: 'Flow Mobility',
     date: '13 May,2025',
     startTimeEpoch: '1715580600', // Example epoch for 11:30 AM
@@ -14,7 +14,7 @@ const mockClasses: ClassItem[] = [
     description: 'Mobility class',
   },
   {
-    id: '2',
+    classId: '2',
     className: 'Cardio Crush',
     date: '13 May,2025',
     startTimeEpoch: '1715589600', // Example epoch for 01:00 PM
@@ -24,7 +24,7 @@ const mockClasses: ClassItem[] = [
     description: 'Cardio class',
   },
   {
-    id: '3',
+    classId: '3',
     className: 'Flow Mobility',
     date: '14 May,2025',
     startTimeEpoch: '1715661600', // Example epoch for 10:00 AM
@@ -34,7 +34,7 @@ const mockClasses: ClassItem[] = [
     description: 'Mobility class',
   },
   {
-    id: '4',
+    classId: '4',
     className: 'Cardio Crush',
     date: '14 May,2025',
     startTimeEpoch: '1715661600', // Example epoch for 10:00 AM
@@ -44,7 +44,7 @@ const mockClasses: ClassItem[] = [
     description: 'Cardio class',
   },
   {
-    id: '5',
+    classId: '5',
     className: 'Rock Endurance',
     date: '14 May,2025',
     startTimeEpoch: '1715661600', // Example epoch for 10:00 AM
