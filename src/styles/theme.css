@@ -1,0 +1,25 @@
+:root {
+  --font-family: 'Lato', Arial, sans-serif;
+  --color-bg: #FAF9F8;
+  --color-primary: #353535;
+  --color-card-bg: #fff;
+  --color-accent: #584769;
+  --color-action: #1D1327;
+  --color-action-hover: #EA4242;
+  --color-button: #584769;
+  --color-button-text: #FAFAFA;
+  --shadow-card: 0px 2px 4px 0px rgba(0,0,0,0.05);
+  --shadow-header: 0px 2px 4px 0px rgba(0,0,0,0.1);
+  --border-radius-lg: 24px;
+  --border-radius-md: 6px;
+  --font-size-base: 13px;
+  --font-size-lg: 15px;
+  --font-size-sm: 10px;
+}
+
+body {
+  font-family: var(--font-family);
+  background: var(--color-bg);
+  color: var(--color-primary);
+  font-size: var(--font-size-base);
+} 

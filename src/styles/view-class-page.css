@@ -1,0 +1,172 @@
+/* ViewClassPage Styles - matches Figma node 555-5280 */
+
+.view-class-root {
+  padding: 4px;
+  min-height: 100vh;
+  background: var(--color-bg);
+}
+
+.view-class-card {
+  background: #FAF9F8;
+  border-radius: 24px;
+  box-shadow: var(--shadow-card);
+  padding: 0;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.view-class-header {
+  background: #1D1327;
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  padding: 32px 48px 24px 48px;
+  color: #FAFAFA;
+}
+
+.view-class-header-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.view-class-header-title {
+  font-family: 'Lato', Arial, sans-serif;
+  font-weight: 600;
+  font-size: 32px;
+}
+
+.view-class-header-info {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: 24px;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.view-class-header-info-sep {
+  font-size: 32px;
+  font-weight: 600;
+}
+
+.view-class-main {
+  display: flex;
+  flex-direction: row;
+  gap: 48px;
+  padding: 48px;
+}
+
+.view-class-table-section {
+  flex: 1;
+  min-width: 800px;
+}
+
+.view-class-table-header {
+  background: #E9E1F1;
+  border-radius: 6px;
+  padding: 0;
+  margin-bottom: 8px;
+  display: grid;
+  grid-template-columns: 2.5fr 1.2fr 1.2fr 1.2fr 1.2fr;
+  font-weight: 600;
+  font-size: 24px;
+  color: #353535;
+}
+
+.view-class-table-row {
+  display: grid;
+  grid-template-columns: 2.5fr 1.2fr 1.2fr 1.2fr 1.2fr;
+  align-items: center;
+  font-size: 22px;
+  font-weight: 500;
+  color: #353535;
+  margin-bottom: 2px;
+  border-radius: 6px;
+  box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.1);
+}
+
+.view-class-table-row.even {
+  background: #E8FFE6;
+}
+
+.view-class-table-row.odd {
+  background: #E2B9B9;
+}
+
+.view-class-table-cell {
+  padding: 20px 24px;
+}
+
+.view-class-table-cell-center {
+  text-align: center;
+}
+
+.view-class-erg-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  /* padding: 10px 16px; */
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: inset 0px 0px 4px 0px rgba(0,0,0,0.25);
+  margin: 8px 12px;
+}
+
+.view-class-timer-section {
+  width: 310px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.view-class-timer-circle {
+  width: 228px;
+  height: 228px;
+  background: #F0F0F0;
+  border-radius: 50%;
+  box-shadow: 0px 0px 12.2px 1px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.view-class-timer-time {
+  font-family: 'Inria Sans', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 36px;
+  color: #76628A;
+}
+
+.view-class-timer-label {
+  text-align: center;
+  color: #76628A;
+  font-family: 'Inria Sans', Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.view-class-stop-btn {
+  width: 241px;
+  height: 56px;
+  background: #DB2E2E;
+  border: none;
+  border-radius: 9px;
+  color: #FAFAFA;
+  font-family: 'Lato', Arial, sans-serif;
+  font-weight: 600;
+  font-size: 44px;
+  box-shadow: inset 0px 0px 14.18px 16.59px rgba(0,0,0,0.25);
+  margin-top: 32px;
+  cursor: pointer;
+  opacity: 0.68;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.view-class-stop-btn-icon {
+  vertical-align: middle;
+  margin-right: 16px;
+} 
