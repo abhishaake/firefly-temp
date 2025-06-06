@@ -88,7 +88,7 @@ export const CreateClassPage: React.FC = () => {
       workoutId,
     };
     try {
-      const response = await fetch('http://localhost:8080/api/v1/class', {
+      const response = await fetch('https://firefly-admin.cozmotech.ie/api/v1/class', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

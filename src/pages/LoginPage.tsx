@@ -26,7 +26,7 @@ export const LoginPage = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('http://localhost:8080/api/app/auth/signIn', {
+      const response = await fetch('https://firefly-admin.cozmotech.ie/api/app/auth/signIn', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
