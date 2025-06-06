@@ -69,7 +69,7 @@ export class ClassService extends BaseApiService {
   }
 
   async getAvailableClasses(): Promise<ApiResponse<ClassItem[]>> {
-    const response = await fetch('http://localhost:8080/api/app/class/available', {
+    const response = await fetch('https://firefly-admin.cozmotech.ie/api/app/class/available', {
       headers: {
         'token': 'FfbhuYx_pSVRl7npG8wQIw',
       },
@@ -86,7 +86,7 @@ export class ClassService extends BaseApiService {
   }
 
   async getClassById(classId: string): Promise<ApiResponse<ClassItem>> {
-    const response = await fetch(`http://localhost:8080/api/app/class/${classId}`, {
+    const response = await fetch(`https://firefly-admin.cozmotech.ie/api/app/class/${classId}`, {
       headers: {
         'token': 'FfbhuYx_pSVRl7npG8wQIw',
       },
