@@ -16,7 +16,7 @@ export const ClassTable: React.FC<Props> = ({ classes, onEdit, onDelete }) => (
     </div>
     <div className="class-table-body-scroll">
       {classes.map((item) => (
-        <ClassTableRow key={item.id} classItem={item} onEdit={onEdit} onDelete={onDelete} />
+        <ClassTableRow key={item.classId} classItem={item} onEdit={onEdit} onDelete={onDelete} />
       ))}
     </div>
   </div>

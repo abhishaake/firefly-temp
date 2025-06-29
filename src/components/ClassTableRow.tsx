@@ -30,8 +30,11 @@ export const ClassTableRow: React.FC<Props> = ({ classItem, onEdit, onDelete }) 
       <div>{"Dublin Central"}</div>
       <div>{classItem.workoutName}</div>
       <div>
-        <button style={{color:'blue'}}className="icon-btn" onClick={() => navigate(`/classes/${classItem.classId}`)} title="View">
+        <button style={{color:'blue', marginRight: '8px'}} className="icon-btn" onClick={() => navigate(`/classes/${classItem.classId}`)} title="View">
           {'View'}
+        </button>
+        <button style={{color:'green'}} className="icon-btn" onClick={() => navigate(`/classes/edit/${classItem.classId}`)} title="Edit">
+          {'Edit'}
         </button>
         {/* <button className="icon-btn" onClick={() => onDelete(classItem.id)} title="Delete">
           🗑️

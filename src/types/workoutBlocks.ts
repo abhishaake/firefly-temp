@@ -1,4 +1,5 @@
 export interface WorkoutBlock {
+    blockId: number;
     workoutRoundId: number;
     sequenceNo: number;
     blockName: string;

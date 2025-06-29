@@ -90,7 +90,7 @@ export class ClassService extends BaseApiService {
   }
 
   async getClassById(classId: string): Promise<ApiResponse<ClassItem>> {
-    const response = await fetch(`http://localhost:8080/api/app/class/${classId}`, {
+    const response = await fetch(`http://localhost:8080/api/v1/class/${classId}`, {
       headers: {
         'token': 'FfbhuYx_pSVRl7npG8wQIw',
       },

@@ -178,11 +178,6 @@ export const CreateWorkoutPage: React.FC = () => {
 
   // Save handler
   const handleSave = async () => {
-    if (workoutId) {
-      // If editing an existing workout, do not save
-      return;
-    }
-
     // Validate that each round has exactly 2 minutes (120 seconds)
     const validationErrors: string[] = [];
     workoutDTO.workoutRounds.forEach((round, index) => {
@@ -202,9 +197,11 @@ export const CreateWorkoutPage: React.FC = () => {
     const { name, description, workoutRounds } = workoutDTO;
     const roundRequests = workoutRounds.map(round => ({
       name: round.name,
+      roundId: round.roundId,
       sequenceNo: round.sequenceNo,
       workoutBlockRequests: round.workoutBlocks.map(block => ({
-        workoutId: 9007199254740991, // Placeholder, update as needed
+        workoutId: workoutId || 9007199254740991, // Use actual workoutId when editing\
+        blockId: block.blockId,
         sequenceNo: block.sequenceNo,
         blockName: block.blockName,
         blockType: block.blockType,
@@ -217,23 +214,39 @@ export const CreateWorkoutPage: React.FC = () => {
       }))
     }));
     const payload = { name, description, roundRequests };
+    
     try {
-      const response = await fetch('http://localhost:8080/api/v1/workouts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'token': 'FfbhuYx_pSVRl7npG8wQIw',
-        },
-        body: JSON.stringify(payload),
-      });
+      let response;
+      if (workoutId) {
+        // Edit existing workout - use PUT endpoint
+        response = await fetch(`http://localhost:8080/api/v1/workouts/${workoutId}/complete`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'token': 'FfbhuYx_pSVRl7npG8wQIw',
+          },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        // Create new workout - use POST endpoint
+        response = await fetch('http://localhost:8080/api/v1/workouts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'token': 'FfbhuYx_pSVRl7npG8wQIw',
+          },
+          body: JSON.stringify(payload),
+        });
+      }
+      
       const data = await response.json();
       if (response.ok) {
-        navigate('/workout');
+        navigate('/workouts');
       } else {
-        setError(data.message || 'Failed to create workout');
+        setError(data.message || `Failed to ${workoutId ? 'update' : 'create'} workout`);
       }
     } catch (error: any) {
-      setError(error.message || 'Failed to create workout');
+      setError(error.message || `Failed to ${workoutId ? 'update' : 'create'} workout`);
     } finally {
       setSaving(false);
     }
@@ -271,7 +284,7 @@ export const CreateWorkoutPage: React.FC = () => {
         </div>
       )}
       <div className="create-workout-header">
-        <button className="back-arrow-btn" aria-label="Back" onClick={() => navigate('/workout')}>
+        <button className="back-arrow-btn" aria-label="Back" onClick={() => navigate('/workouts')}>
           <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M18 24L10 16L18 8" stroke="#353535" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>

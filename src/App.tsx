@@ -15,6 +15,7 @@ import { CustomMainLayout } from './layouts/CustomMainLayout';
 import { WorkoutPage } from './pages/WorkoutPage';
 import { CreateWorkoutPage } from './pages/CreateWorkoutPage';
 import { CreateClassPage } from './pages/CreateClassPage';
+import { EditClassPage } from './pages/EditClassPage';
 import { ViewClassPage } from './pages/VIewClassPage';
 
 // Create a client
@@ -69,6 +70,16 @@ function App() {
                 <ProtectedRoute>
                   <CustomMainLayout>
                     <CreateClassPage />
+                  </CustomMainLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/classes/edit/:classId"
+              element={
+                <ProtectedRoute>
+                  <CustomMainLayout>
+                    <EditClassPage />
                   </CustomMainLayout>
                 </ProtectedRoute>
               }

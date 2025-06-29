@@ -5,6 +5,7 @@ export interface ClassItem {
   startTimeEpoch: string;
   trainer: string;
   gymLocation: string;
+  workoutId: number;
   workoutName: string;
   description: string;
 } 
