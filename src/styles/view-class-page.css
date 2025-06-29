@@ -1,10 +1,12 @@
 /* ViewClassPage Styles - matches Figma node 555-5280 */
 
-.view-class-root {
-  padding: 4px;
-  min-height: 100vh;
-  background: var(--color-bg);
-}
+  .view-class-root {
+    padding: 4px;
+    min-height: 100vh;
+    width: 99vw;
+    background: var(--color-bg);
+    margin-left: 3px;
+  }
 
 .view-class-card {
   background: #FAF9F8;
@@ -53,7 +55,7 @@
   display: flex;
   flex-direction: row;
   gap: 48px;
-  padding: 48px;
+  padding: 4px;
 }
 
 .view-class-table-section {
@@ -121,12 +123,13 @@
 }
 
 .view-class-timer-circle {
-  width: 228px;
-  height: 228px;
+  width: 200px;
+  height: 200px;
   background: #F0F0F0;
   border-radius: 50%;
   box-shadow: 0px 0px 12.2px 1px rgba(0,0,0,0.15);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   margin-bottom: 24px;
@@ -169,4 +172,296 @@
 .view-class-stop-btn-icon {
   vertical-align: middle;
   margin-right: 16px;
+}
+
+/* Modern Table Styles */
+.modern-table-container {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid #F3F4F6;
+  flex: 1;
+}
+
+.modern-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.table-title {
+  font-family: 'Lato', Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.participants-count {
+  font-family: 'Lato', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6B7280;
+  background: #F3F4F6;
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.modern-table {
+  width: 100%;
+}
+
+.view-class-table-header-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #E5E7EB;
+  margin-bottom: 8px;
+}
+
+.view-class-table-header-cell {
+  font-family: 'Lato', Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0 8px;
+}
+
+.view-class-table-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.view-class-table-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 16px;
+  padding: 8px 0;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.view-class-table-row:hover {
+  background-color: #F9FAFB;
+}
+
+.view-class-table-row.checked-in {
+  background-color: #E8FFE6;
+}
+
+.view-class-table-row.not-checked-in {
+  background-color: #E2B9B9;
+}
+
+.view-class-table-row.checked-in:hover {
+  background-color: #D4F7D2;
+}
+
+.view-class-table-row.not-checked-in:hover {
+  background-color: #D6A5A5;
+}
+
+.view-class-table-cell {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  font-family: 'Lato', Arial, sans-serif;
+}
+
+.view-class-client-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.client-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.client-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.view-class-status-cell {
+  justify-content: flex-start;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.status-badge.created {
+  background: #DBEAFE;
+  color: #1D4ED8;
+}
+
+.status-badge.checked_in {
+  background: #D1FAE5;
+  color: #065F46;
+}
+
+.status-badge.completed {
+  background: #E0E7FF;
+  color: #5B21B6;
+}
+
+.view-class-machine-cell {
+  justify-content: flex-start;
+}
+
+.machine-assignment {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.machine-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  background: #F3F4F6;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #E5E7EB;
+}
+
+.view-class-table-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 0;
+  gap: 12px;
+  color: #6B7280;
+}
+
+.view-class-table-loading span {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.view-class-table-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 0;
+  gap: 16px;
+  color: #9CA3AF;
+}
+
+.view-class-table-empty svg {
+  opacity: 0.5;
+}
+
+.view-class-table-empty p {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+  color: #6B7280;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .table-header-row,
+  .table-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .table-header-cell {
+    display: none;
+  }
+  
+  .table-cell {
+    padding: 8px 0;
+    border-bottom: 1px solid #F3F4F6;
+  }
+  
+  .table-cell:last-child {
+    border-bottom: none;
+  }
+  
+  .client-cell {
+    padding-bottom: 12px;
+    border-bottom: 1px solid #E5E7EB;
+  }
+}
+
+/* Enhanced View Class Styles */
+.view-class-main {
+  display: flex;
+  gap: 32px;
+}
+
+.view-class-timer-section {
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.view-class-timer-circle {
+  background: white;
+  padding: 4px;
+  text-align: center;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid #F3F4F6;
+}
+
+.view-class-timer-time {
+  font-size: 32px;
+  font-weight: 700;
+  color: #111827;
+  font-family: 'Lato', Arial, sans-serif;
+}
+
+.view-class-stop-btn {
+  background: #EF4444;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  font-family: 'Lato', Arial, sans-serif;
+}
+
+.view-class-stop-btn:hover {
+  background: #DC2626;
+}
+
+.view-class-stop-btn-icon {
+  font-size: 12px;
 } 

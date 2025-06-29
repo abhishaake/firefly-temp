@@ -10,9 +10,9 @@ const PROMPT_OPTIONS = ['WARMUP', 'RECOVERY', 'REST', 'STAIRS', 'HOLD'];
 const METRIC_OPTIONS = ['WATTS', 'METERS', 'CALORIES'];
 
 // --- CreateWorkoutFooterBar (already in this file) ---
-const CreateWorkoutFooterBar: React.FC<{ onSave: () => void }> = ({ onSave }) => (
+const CreateWorkoutFooterBar: React.FC<{ onSave: () => void; currentTime: number; totalTime: number }> = ({ onSave, currentTime, totalTime }) => (
   <div className="create-workout-footer-bar">
-    <div className="footer-bar-time">Time : 600/2700 Sec</div>
+    <div className="footer-bar-time">Time : {currentTime}/{totalTime} Sec</div>
     <div className="footer-bar-actions">
       <button className="footer-cancel-btn">Cancel</button>
       <button className="footer-save-btn" onClick={onSave}>Save & Publish</button>
@@ -44,13 +44,19 @@ export const CreateWorkoutPage: React.FC = () => {
     if (workoutDetails) {
       return JSON.parse(JSON.stringify(workoutDetails));
     }
+    // For new workouts, start with 3 rounds
+    const defaultRounds = [
+      { name: 'Erg 1', sequenceNo: 1, workoutBlocks: [] },
+      { name: 'Erg 2', sequenceNo: 2, workoutBlocks: [] },
+      { name: 'Erg 3', sequenceNo: 3, workoutBlocks: [] },
+    ];
     return {
       workoutId: 0,
       name: '',
       description: '',
       duration: '0',
       createdBy: '',
-      workoutRounds: [],
+      workoutRounds: defaultRounds,
     } as Workout;
   });
   const [selectedRoundIndex, setSelectedRoundIndex] = useState<number>(0);
@@ -131,6 +137,32 @@ export const CreateWorkoutPage: React.FC = () => {
       return { ...prev, workoutRounds: rounds };
     });
   };
+
+  // Helper function to handle numeric input validation
+  const handleNumericInputChange = (e: React.ChangeEvent<HTMLInputElement>, roundIdx: number, blockIdx: number, field: keyof WorkoutBlock) => {
+    const value = e.target.value;
+    // Allow empty string, numbers, and decimal point
+    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+      handleBlockFieldChange(roundIdx, blockIdx, field, value === '' ? 0 : Number(value));
+    }
+  };
+
+  // Helper function to prevent non-numeric key presses
+  const handleNumericKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Allow: backspace, delete, tab, escape, enter, home, end, left, right, up, down arrows
+    if ([8, 9, 27, 13, 46, 35, 36, 37, 38, 39, 40].indexOf(e.keyCode) !== -1 ||
+        // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+        (e.keyCode === 65 && e.ctrlKey === true) ||
+        (e.keyCode === 67 && e.ctrlKey === true) ||
+        (e.keyCode === 86 && e.ctrlKey === true) ||
+        (e.keyCode === 88 && e.ctrlKey === true)) {
+      return;
+    }
+    // Ensure that it is a number and stop the keypress
+    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105) && e.keyCode !== 190) {
+      e.preventDefault();
+    }
+  };
   const handleDeleteBlock = (roundIdx: number, blockIdx: number) => {
     setWorkoutDTO(prev => {
       const rounds = prev.workoutRounds.map((r, i) => {
@@ -150,6 +182,21 @@ export const CreateWorkoutPage: React.FC = () => {
       // If editing an existing workout, do not save
       return;
     }
+
+    // Validate that each round has exactly 2 minutes (120 seconds)
+    const validationErrors: string[] = [];
+    workoutDTO.workoutRounds.forEach((round, index) => {
+      const totalDuration = round.workoutBlocks.reduce((sum, block) => sum + block.durationSeconds, 0);
+      if (totalDuration !== 120) {
+        validationErrors.push(`${round.name} total duration is ${totalDuration} seconds. It must be exactly 120 seconds (2 minutes).`);
+      }
+    });
+
+    if (validationErrors.length > 0) {
+      setError(validationErrors.join(' '));
+      return;
+    }
+
     setSaving(true);
     setError(null);
     const { name, description, workoutRounds } = workoutDTO;
@@ -192,12 +239,22 @@ export const CreateWorkoutPage: React.FC = () => {
     }
   };
 
+
+
   // Show loading banner if waiting for API
   if (workoutId && isDetailsLoading) {
     return <div style={{ padding: 32, textAlign: 'center', fontWeight: 600 }}>Loading workout details...</div>;
   }
 
   const currentRound = workoutDTO.workoutRounds[selectedRoundIndex];
+
+  // Calculate total time from all rounds and blocks
+  const currentTotalTime = workoutDTO.workoutRounds.reduce((total, round) => {
+    return total + round.workoutBlocks.reduce((roundTotal, block) => roundTotal + block.durationSeconds, 0);
+  }, 0);
+  
+  // Expected total time (2 minutes per round)
+  const expectedTotalTime = workoutDTO.workoutRounds.length * 120;
 
   return (
     <div className="workout-outer-card">
@@ -291,13 +348,34 @@ export const CreateWorkoutPage: React.FC = () => {
                     </select>
                   </div>
                   <div className="table-col flex2 cell-style">
-                    <input className="cell-input" type="number" value={block.durationSeconds} min={0} onChange={e => handleBlockFieldChange(selectedRoundIndex, blockIdx, 'durationSeconds', Number(e.target.value))} />
+                    <input 
+                      className="cell-input" 
+                      type="text" 
+                      value={block.durationSeconds} 
+                      placeholder="Enter seconds"
+                      onChange={e => handleNumericInputChange(e, selectedRoundIndex, blockIdx, 'durationSeconds')}
+                      onKeyDown={handleNumericKeyDown}
+                    />
                   </div>
                   <div className="table-col flex2 cell-style">
-                    <input className="cell-input" type="number" value={block.multiplier} min={1} onChange={e => handleBlockFieldChange(selectedRoundIndex, blockIdx, 'multiplier', Number(e.target.value))} />
+                    <input 
+                      className="cell-input" 
+                      type="text" 
+                      value={block.multiplier} 
+                      placeholder="Enter multiplier"
+                      onChange={e => handleNumericInputChange(e, selectedRoundIndex, blockIdx, 'multiplier')}
+                      onKeyDown={handleNumericKeyDown}
+                    />
                   </div>
                   <div className="table-col flex2 cell-style">
-                    <input className="cell-input" type="number" value={block.gear} min={1} onChange={e => handleBlockFieldChange(selectedRoundIndex, blockIdx, 'gear', Number(e.target.value))} />
+                    <input 
+                      className="cell-input" 
+                      type="text" 
+                      value={block.gear} 
+                      placeholder="Enter gear"
+                      onChange={e => handleNumericInputChange(e, selectedRoundIndex, blockIdx, 'gear')}
+                      onKeyDown={handleNumericKeyDown}
+                    />
                   </div>
                   <div className="table-col flex2 cell-style">
                     <select className="custom-select" value={block.targetMetric} onChange={e => handleBlockFieldChange(selectedRoundIndex, blockIdx, 'targetMetric', e.target.value)}>
@@ -305,7 +383,14 @@ export const CreateWorkoutPage: React.FC = () => {
                     </select>
                   </div>
                   <div className="table-col flex2 cell-style">
-                    <input className="cell-input" type="number" value={block.targetValue} min={0} onChange={e => handleBlockFieldChange(selectedRoundIndex, blockIdx, 'targetValue', Number(e.target.value))} />
+                    <input 
+                      className="cell-input" 
+                      type="text" 
+                      value={block.targetValue} 
+                      placeholder="Enter target value"
+                      onChange={e => handleNumericInputChange(e, selectedRoundIndex, blockIdx, 'targetValue')}
+                      onKeyDown={handleNumericKeyDown}
+                    />
                   </div>
                   <div className="table-col flex2 cell-style">
                     <input className="cell-input" type="text" value={block.scoring} onChange={e => handleBlockFieldChange(selectedRoundIndex, blockIdx, 'scoring', e.target.value)} />
@@ -330,7 +415,7 @@ export const CreateWorkoutPage: React.FC = () => {
           </div>
         </div>
       </div>
-      <CreateWorkoutFooterBar onSave={handleSave} />
+      <CreateWorkoutFooterBar onSave={handleSave} currentTime={currentTotalTime} totalTime={expectedTotalTime} />
       {error && <div style={{ color: 'red', marginTop: 8, textAlign: 'center' }}>{error}</div>}
     </div>
   );

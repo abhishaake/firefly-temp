@@ -56,6 +56,10 @@ const mockClasses: ClassItem[] = [
 ];
 
 export class ClassService extends BaseApiService {
+  constructor() {
+    super({ baseURL: 'http://localhost:8080' });
+  }
+
   async getClasses(): Promise<ApiResponse<ClassItem[]>> {
     // return this.get<ClassItem[]>('/classes');
 
@@ -69,7 +73,7 @@ export class ClassService extends BaseApiService {
   }
 
   async getAvailableClasses(): Promise<ApiResponse<ClassItem[]>> {
-    const response = await fetch('https://firefly-admin.cozmotech.ie/api/app/class/available', {
+    const response = await fetch('http://localhost:8080/api/app/class/available', {
       headers: {
         'token': 'FfbhuYx_pSVRl7npG8wQIw',
       },
@@ -86,7 +90,7 @@ export class ClassService extends BaseApiService {
   }
 
   async getClassById(classId: string): Promise<ApiResponse<ClassItem>> {
-    const response = await fetch(`https://firefly-admin.cozmotech.ie/api/app/class/${classId}`, {
+    const response = await fetch(`http://localhost:8080/api/app/class/${classId}`, {
       headers: {
         'token': 'FfbhuYx_pSVRl7npG8wQIw',
       },

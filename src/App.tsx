@@ -1,11 +1,16 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
+import { ToastProvider } from './contexts/ToastContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { LoginPage } from './pages/LoginPage';
 import { ManageClassesPage } from './pages/ManageClassesPage';
+import { ManageTrainerPage } from './pages/ManageTrainerPage';
+import { ManageMembersPage } from './pages/ManageMembersPage';
+import { MemberProfilePage } from './pages/MemberProfilePage';
 import { CustomMainLayout } from './layouts/CustomMainLayout';
 import { WorkoutPage } from './pages/WorkoutPage';
 import { CreateWorkoutPage } from './pages/CreateWorkoutPage';
@@ -16,7 +21,7 @@ import { ViewClassPage } from './pages/VIewClassPage';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: false,  
       retry: 1,
     },
   },
@@ -27,28 +32,26 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <MantineProvider>
         <Notifications />
-        <BrowserRouter>
+        <ToastProvider>
+          <Router>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
-            <Route
-              path="/manage-classes"
+            <Route 
+              path="/*" 
               element={
                 <ProtectedRoute>
                   <CustomMainLayout>
-                    <ManageClassesPage />
+                    <Routes>
+                      <Route path="/" element={<Navigate to="/manage-classes" replace />} />
+                      <Route path="/manage-classes" element={<ManageClassesPage />} />
+                      <Route path="/workouts" element={<WorkoutPage />} />
+                      <Route path="/manage-trainer" element={<ManageTrainerPage />} />
+                      <Route path="/members" element={<ManageMembersPage />} />
+                      <Route path="/member-profile/:userId" element={<MemberProfilePage />} />
+                    </Routes>
                   </CustomMainLayout>
                 </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/workout"
-              element={
-                <ProtectedRoute>
-                  <CustomMainLayout>
-                    <WorkoutPage />
-                  </CustomMainLayout>
-                </ProtectedRoute>
-              }
+              } 
             />
             <Route
               path="/workout/create"
@@ -90,9 +93,9 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path="*" element={<Navigate to="/manage-classes" replace />} />
           </Routes>
-        </BrowserRouter>
+        </Router>
+        </ToastProvider>
       </MantineProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

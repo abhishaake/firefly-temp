@@ -350,7 +350,7 @@
   background: #584769;
   border-radius: 6px;
   box-shadow: inset 0px 0px 10.4px 2px rgba(59, 45, 72, 0.5);
-  width: 104px;
+  width: fit-content;
   padding: 16px 24px;
   color: #fff;
   display: flex;
@@ -585,11 +585,12 @@
   font-size: 14px;
   font-weight: 400;
   color: #353535;
-  padding: 8px;
+  padding: 2px 6px 2px 6px;
   min-width: fit-content;
   min-height: 25px;
   display: flex;
   align-items: center;
+  height: 36px;
 }
 .cell-input, .custom-select {
   background: transparent;

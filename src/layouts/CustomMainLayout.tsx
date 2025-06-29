@@ -2,6 +2,8 @@ import React from 'react';
 import { Sidebar } from '../components/Sidebar';
 import '../styles/theme.css';
 import '../styles/manage-classes.css';
+import '../styles/manage-trainer.css';
+import '../styles/manage-members.css';
 import '../styles/sidebar.css';
 import '../styles/custom-layout.css';
 

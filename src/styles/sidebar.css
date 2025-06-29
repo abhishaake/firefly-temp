@@ -43,7 +43,7 @@
 
 .sidebar-nav-item {
   display: flex;
-  align-items: center;
+  align-items: normal;
   gap: 18px;
   padding: 18px 24px;
   font-size: 1.1rem;
@@ -57,6 +57,11 @@
 .sidebar-nav-item.active, .sidebar-nav-item:hover {
   background: #FAF9F8;
   color: #353535;
+}
+
+.sidebar-nav-item.active svg path, .sidebar-nav-item:hover svg path {
+  stroke: black;
+  color: black;
 }
 
 .sidebar-nav-item.logout {

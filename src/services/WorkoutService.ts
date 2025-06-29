@@ -2,7 +2,7 @@ import type { ApiResponse } from '../types/api';
 import type { Workout } from '../types/workout';
 import type { WorkoutWrapper } from '../types/workoutWrapper';
 
-const API_URL = 'https://firefly-admin.cozmotech.ie/api/v1/workouts';
+const API_URL = 'http://localhost:8080/api/v1/workouts';
 const API_TOKEN = 'FfbhuYx_pSVRl7npG8wQIw';
 
 export class WorkoutService {
@@ -34,7 +34,7 @@ export class WorkoutService {
 
   async getWorkoutDetails(workoutId: number): Promise<ApiResponse<Workout>> {
     try {
-      const response = await fetch(`https://firefly-admin.cozmotech.ie/api/v1/workouts/details?workoutId=${workoutId}`, {
+      const response = await fetch(`http://localhost:8080/api/v1/workouts/details?workoutId=${workoutId}`, {
         headers: {
           'token': API_TOKEN,
         },
