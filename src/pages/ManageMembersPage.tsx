@@ -42,7 +42,7 @@ export const ManageMembersPage: React.FC = () => {
     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
   };
 
-  
+
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,8 +69,8 @@ export const ManageMembersPage: React.FC = () => {
               className="manage-members-search-input"
             />
             <button type="submit" className="manage-members-search-icon"
-                onClick={handleSearch}
-              >
+              onClick={handleSearch}
+            >
               <svg
                 width="20"
                 height="20"

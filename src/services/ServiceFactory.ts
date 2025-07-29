@@ -15,7 +15,7 @@ export class ServiceFactory {
 
   static getAuthService(): AuthService {
     if (!this.authService) {
-      this.authService = new AuthService('http://localhost:8080');
+      this.authService = new AuthService('https://firefly-admin.cozmotech.ie');
     }
     return this.authService;
   }
@@ -36,14 +36,14 @@ export class ServiceFactory {
 
   static getTrainerService(): TrainerService {
     if (!this.trainerService) {
-      this.trainerService = new TrainerService({ baseURL: 'http://localhost:8080' });
+      this.trainerService = new TrainerService({ baseURL: 'https://firefly-admin.cozmotech.ie' });
     }
     return this.trainerService;
   }
 
   static getMemberService(): MemberService {
     if (!this.memberService) {
-      this.memberService = new MemberService({ baseURL: 'http://localhost:8080' });
+      this.memberService = new MemberService({ baseURL: 'https://firefly-admin.cozmotech.ie' });
     }
     return this.memberService;
   }

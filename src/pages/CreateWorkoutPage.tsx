@@ -26,29 +26,50 @@ export const CreateWorkoutPage: React.FC = () => {
   const params = useParams<{ workoutId?: string }>();
   const location = useLocation();
   let workoutId = params.workoutId ? Number(params.workoutId) : location.state?.workoutId;
+  let cloneFromWorkoutId: number | undefined;
+
   if (!workoutId && location.search) {
     const searchParams = new URLSearchParams(location.search);
     const idFromQuery = searchParams.get('workoutId');
+    const cloneIdFromQuery = searchParams.get('cloneFromWorkoutId');
     if (idFromQuery) {
       workoutId = Number(idFromQuery);
+    } else if (cloneIdFromQuery) {
+      cloneFromWorkoutId = Number(cloneIdFromQuery);
     }
   }
-  // Only call the API if workoutId is present
+
+  // Load workout data for editing or cloning
+  const sourceWorkoutId = workoutId || cloneFromWorkoutId;
   const {
     data: workoutDetails,
     isLoading: isDetailsLoading
-  } = useWorkoutDetailsQuery(workoutId ? workoutId : undefined);
+  } = useWorkoutDetailsQuery(sourceWorkoutId ? sourceWorkoutId : undefined);
 
   // Single source of truth for all data
   const [workoutDTO, setWorkoutDTO] = useState<Workout>(() => {
     if (workoutDetails) {
-      return JSON.parse(JSON.stringify(workoutDetails));
+      const clonedData = JSON.parse(JSON.stringify(workoutDetails));
+      // If this is a clone operation, remove all IDs to make it a new workout
+      if (cloneFromWorkoutId) {
+        clonedData.workoutId = 0;
+        clonedData.name = `Copy of ${clonedData.name}`;
+        clonedData.workoutRounds = clonedData.workoutRounds.map((round: any) => ({
+          ...round,
+          roundId: 0,
+          workoutBlocks: round.workoutBlocks.map((block: any) => ({
+            ...block,
+            blockId: 0
+          }))
+        }));
+      }
+      return clonedData;
     }
     // For new workouts, start with 3 rounds
     const defaultRounds = [
-      { name: 'Erg 1', sequenceNo: 1, workoutBlocks: [] },
-      { name: 'Erg 2', sequenceNo: 2, workoutBlocks: [] },
-      { name: 'Erg 3', sequenceNo: 3, workoutBlocks: [] },
+      { roundId: 0, name: 'Row', sequenceNo: 1, workoutBlocks: [], type: 'ROW' },
+      { roundId: 0, name: 'Bike', sequenceNo: 2, workoutBlocks: [], type: 'BIKE' },
+      { roundId: 0, name: 'Ski', sequenceNo: 3, workoutBlocks: [], type: 'SKI' },
     ];
     return {
       workoutId: 0,
@@ -66,10 +87,24 @@ export const CreateWorkoutPage: React.FC = () => {
   // Sync workoutDTO with API data if it changes
   React.useEffect(() => {
     if (workoutDetails) {
-      setWorkoutDTO(JSON.parse(JSON.stringify(workoutDetails)));
+      const clonedData = JSON.parse(JSON.stringify(workoutDetails));
+      // If this is a clone operation, remove all IDs to make it a new workout
+      if (cloneFromWorkoutId) {
+        clonedData.workoutId = 0;
+        clonedData.name = `Copy of ${clonedData.name}`;
+        clonedData.workoutRounds = clonedData.workoutRounds.map((round: any) => ({
+          ...round,
+          roundId: 0,
+          workoutBlocks: round.workoutBlocks.map((block: any) => ({
+            ...block,
+            blockId: 0
+          }))
+        }));
+      }
+      setWorkoutDTO(clonedData);
       setSelectedRoundIndex(0);
     }
-  }, [workoutDetails]);
+  }, [workoutDetails, cloneFromWorkoutId]);
 
   // Form field handlers
   const handleFieldChange = (field: keyof Workout, value: any) => {
@@ -84,7 +119,7 @@ export const CreateWorkoutPage: React.FC = () => {
         ...prev,
         workoutRounds: [
           ...(prev.workoutRounds || []),
-          { name: `Round ${nextSeq}`, sequenceNo: nextSeq, workoutBlocks: [] }
+          { roundId: 0, name: `Round ${nextSeq}`, sequenceNo: nextSeq, workoutBlocks: [] }
         ]
       };
     });
@@ -106,6 +141,7 @@ export const CreateWorkoutPage: React.FC = () => {
         if (i !== roundIdx) return r;
         const nextSeq = r.workoutBlocks.length + 1;
         const newBlock: WorkoutBlock = {
+          blockId: null,
           workoutRoundId: r.sequenceNo,
           sequenceNo: nextSeq,
           blockName: `Block ${nextSeq}`,
@@ -151,11 +187,11 @@ export const CreateWorkoutPage: React.FC = () => {
   const handleNumericKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // Allow: backspace, delete, tab, escape, enter, home, end, left, right, up, down arrows
     if ([8, 9, 27, 13, 46, 35, 36, 37, 38, 39, 40].indexOf(e.keyCode) !== -1 ||
-        // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
-        (e.keyCode === 65 && e.ctrlKey === true) ||
-        (e.keyCode === 67 && e.ctrlKey === true) ||
-        (e.keyCode === 86 && e.ctrlKey === true) ||
-        (e.keyCode === 88 && e.ctrlKey === true)) {
+      // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+      (e.keyCode === 65 && e.ctrlKey === true) ||
+      (e.keyCode === 67 && e.ctrlKey === true) ||
+      (e.keyCode === 86 && e.ctrlKey === true) ||
+      (e.keyCode === 88 && e.ctrlKey === true)) {
       return;
     }
     // Ensure that it is a number and stop the keypress
@@ -199,8 +235,9 @@ export const CreateWorkoutPage: React.FC = () => {
       name: round.name,
       roundId: round.roundId,
       sequenceNo: round.sequenceNo,
+      type: round.name === 'Row' ? 'ROW' : round.name === 'Bike' ? 'BIKE' : 'SKI',
       workoutBlockRequests: round.workoutBlocks.map(block => ({
-        workoutId: workoutId || 9007199254740991, // Use actual workoutId when editing\
+        workoutId: (workoutId && !cloneFromWorkoutId) ? workoutId : null, // Use actual workoutId only when editing, not cloning
         blockId: block.blockId,
         sequenceNo: block.sequenceNo,
         blockName: block.blockName,
@@ -210,16 +247,17 @@ export const CreateWorkoutPage: React.FC = () => {
         gear: block.gear,
         targetMetric: block.targetMetric || 'WATTS',
         targetValue: block.targetValue,
-        scoring: block.scoring,
+        scoring: block.scoring, 
       }))
     }));
     const payload = { name, description, roundRequests };
-    
+
     try {
       let response;
-      if (workoutId) {
+      // Only use PUT endpoint if we have workoutId AND it's not a clone operation
+      if (workoutId && !cloneFromWorkoutId) {
         // Edit existing workout - use PUT endpoint
-        response = await fetch(`http://localhost:8080/api/v1/workouts/${workoutId}/complete`, {
+        response = await fetch(`https://firefly-admin.cozmotech.ie/api/v1/workouts/${workoutId}/complete`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -228,8 +266,8 @@ export const CreateWorkoutPage: React.FC = () => {
           body: JSON.stringify(payload),
         });
       } else {
-        // Create new workout - use POST endpoint
-        response = await fetch('http://localhost:8080/api/v1/workouts', {
+        // Create new workout (including clones) - use POST endpoint
+        response = await fetch('https://firefly-admin.cozmotech.ie/api/v1/workouts', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -238,15 +276,17 @@ export const CreateWorkoutPage: React.FC = () => {
           body: JSON.stringify(payload),
         });
       }
-      
+
       const data = await response.json();
       if (response.ok) {
         navigate('/workouts');
       } else {
-        setError(data.message || `Failed to ${workoutId ? 'update' : 'create'} workout`);
+        const isEdit = workoutId && !cloneFromWorkoutId;
+        setError(data.message || `Failed to ${isEdit ? 'update' : 'create'} workout`);
       }
     } catch (error: any) {
-      setError(error.message || `Failed to ${workoutId ? 'update' : 'create'} workout`);
+      const isEdit = workoutId && !cloneFromWorkoutId;
+      setError(error.message || `Failed to ${isEdit ? 'update' : 'create'} workout`);
     } finally {
       setSaving(false);
     }
@@ -255,7 +295,7 @@ export const CreateWorkoutPage: React.FC = () => {
 
 
   // Show loading banner if waiting for API
-  if (workoutId && isDetailsLoading) {
+  if (sourceWorkoutId && isDetailsLoading) {
     return <div style={{ padding: 32, textAlign: 'center', fontWeight: 600 }}>Loading workout details...</div>;
   }
 
@@ -265,7 +305,7 @@ export const CreateWorkoutPage: React.FC = () => {
   const currentTotalTime = workoutDTO.workoutRounds.reduce((total, round) => {
     return total + round.workoutBlocks.reduce((roundTotal, block) => roundTotal + block.durationSeconds, 0);
   }, 0);
-  
+
   // Expected total time (2 minutes per round)
   const expectedTotalTime = workoutDTO.workoutRounds.length * 120;
 
@@ -286,7 +326,7 @@ export const CreateWorkoutPage: React.FC = () => {
       <div className="create-workout-header">
         <button className="back-arrow-btn" aria-label="Back" onClick={() => navigate('/workouts')}>
           <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 24L10 16L18 8" stroke="#353535" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M18 24L10 16L18 8" stroke="#353535" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
         <span className="header-title">Build Workout Block</span>
@@ -326,15 +366,16 @@ export const CreateWorkoutPage: React.FC = () => {
                 onClick={() => handleSelectRound(idx)}
                 style={{ cursor: 'pointer' }}
               >
-                <input
+                {round.name}
+                {/* <input
                   className="figma-header-card-input"
                   value={round.name}
-                  onChange={e => handleRoundNameChange(idx, e.target.value)}
+                  // onChange={e => handleRoundNameChange(idx, e.target.value)}
                   style={{ border: 'none', background: 'transparent', fontWeight: 'bold', width: 80 }}
-                />
+                /> */}
               </div>
             ))}
-            <div className="figma-header-plus" onClick={handleAddRound} style={{cursor:'pointer'}}><span>+</span></div>
+            <div className="figma-header-plus" onClick={handleAddRound} style={{ cursor: 'pointer' }}><span>+</span></div>
           </div>
           <div className="figma-header-menu"><span>⋮</span></div>
         </div>
@@ -361,30 +402,30 @@ export const CreateWorkoutPage: React.FC = () => {
                     </select>
                   </div>
                   <div className="table-col flex2 cell-style">
-                    <input 
-                      className="cell-input" 
-                      type="text" 
-                      value={block.durationSeconds} 
+                    <input
+                      className="cell-input"
+                      type="text"
+                      value={block.durationSeconds}
                       placeholder="Enter seconds"
                       onChange={e => handleNumericInputChange(e, selectedRoundIndex, blockIdx, 'durationSeconds')}
                       onKeyDown={handleNumericKeyDown}
                     />
                   </div>
                   <div className="table-col flex2 cell-style">
-                    <input 
-                      className="cell-input" 
-                      type="text" 
-                      value={block.multiplier} 
+                    <input
+                      className="cell-input"
+                      type="text"
+                      value={block.multiplier}
                       placeholder="Enter multiplier"
                       onChange={e => handleNumericInputChange(e, selectedRoundIndex, blockIdx, 'multiplier')}
                       onKeyDown={handleNumericKeyDown}
                     />
                   </div>
                   <div className="table-col flex2 cell-style">
-                    <input 
-                      className="cell-input" 
-                      type="text" 
-                      value={block.gear} 
+                    <input
+                      className="cell-input"
+                      type="text"
+                      value={block.gear}
                       placeholder="Enter gear"
                       onChange={e => handleNumericInputChange(e, selectedRoundIndex, blockIdx, 'gear')}
                       onKeyDown={handleNumericKeyDown}
@@ -396,10 +437,10 @@ export const CreateWorkoutPage: React.FC = () => {
                     </select>
                   </div>
                   <div className="table-col flex2 cell-style">
-                    <input 
-                      className="cell-input" 
-                      type="text" 
-                      value={block.targetValue} 
+                    <input
+                      className="cell-input"
+                      type="text"
+                      value={block.targetValue}
                       placeholder="Enter target value"
                       onChange={e => handleNumericInputChange(e, selectedRoundIndex, blockIdx, 'targetValue')}
                       onKeyDown={handleNumericKeyDown}
@@ -408,9 +449,9 @@ export const CreateWorkoutPage: React.FC = () => {
                   <div className="table-col flex2 cell-style">
                     <input className="cell-input" type="text" value={block.scoring} onChange={e => handleBlockFieldChange(selectedRoundIndex, blockIdx, 'scoring', e.target.value)} />
                   </div>
-                  <div className="table-col flex2" style={{display:'flex',gap:8}}>
+                  <div className="table-col flex2" style={{ display: 'flex', gap: 8 }}>
                     <button className="icon-btn" title="Delete Row" tabIndex={-1} onClick={() => handleDeleteBlock(selectedRoundIndex, blockIdx)}>
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="5" width="10" height="10" rx="2" stroke="#353535" strokeWidth="1.5"/><path d="M8 8L12 12M12 8L8 12" stroke="#353535" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="5" width="10" height="10" rx="2" stroke="#353535" strokeWidth="1.5" /><path d="M8 8L12 12M12 8L8 12" stroke="#353535" strokeWidth="1.5" strokeLinecap="round" /></svg>
                     </button>
                   </div>
                 </div>

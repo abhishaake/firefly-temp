@@ -3,7 +3,7 @@ import type { MemberProfileResponse } from '../types';
 
 export class MemberProfileService extends BaseApiService {
   constructor() {
-    super({ baseURL: 'http://localhost:8080/api/v1/dashboard' });
+    super({ baseURL: 'https://firefly-admin.cozmotech.ie/api/v1/dashboard' });
   }
 
   async getMemberProfile(userId: string): Promise<MemberProfileResponse> {

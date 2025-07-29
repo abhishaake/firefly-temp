@@ -6,6 +6,7 @@ interface PersonalBestsProps {
 }
 
 export const PersonalBests: React.FC<PersonalBestsProps> = ({ userProfile }) => {
+  if (!userProfile) return null;
   const formatTime = (seconds: number): string => {
     if (seconds === 0) return '0:00';
     const minutes = Math.floor(seconds / 60);

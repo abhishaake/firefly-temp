@@ -11,9 +11,9 @@ const CreateClassHeader: React.FC = () => {
   const navigate = useNavigate();
   return (
     <div className="create-class-header-row">
-      <button className="back-arrow-btn" aria-label="Back" onClick={() => navigate('/') }>
+      <button className="back-arrow-btn" aria-label="Back" onClick={() => navigate('/')}>
         <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M18 24L10 16L18 8" stroke="#353535" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M18 24L10 16L18 8" stroke="#353535" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
       <span className="create-class-title">Create New Class</span>
@@ -25,32 +25,32 @@ const ClassDetailsSection: React.FC = () => (
   <div className="class-details-section">
     <div className="class-details-label">Class Details</div>
     <div className="class-details-fields">
-    <div className="class-details-row">
+      <div className="class-details-row">
         <div className="class-details-group">
           <label>Class Name</label>
-          <input style={{width: '500px'}} type="text" placeholder="Enter class name" />
+          <input style={{ width: '500px' }} type="text" placeholder="Enter class name" />
         </div>
       </div>
       <div className="class-details-row">
-      <div className="class-details-group">
+        <div className="class-details-group">
           <label>Location</label>
-          <input style={{width: '500px'}} type="text" placeholder="Enter Location name" />
+          <input style={{ width: '500px' }} type="text" placeholder="Enter Location name" />
         </div>
         <div className="class-details-group">
           <label>Trainer</label>
-          <input style={{width: '500px'}} type="text" placeholder="Enter trainer name" />
+          <input style={{ width: '500px' }} type="text" placeholder="Enter trainer name" />
         </div>
       </div>
       <div className="class-details-row">
-      <div className="class-details-group"> 
+        <div className="class-details-group">
           <label>Date</label>
-          <input style={{width: '500px'}} type="date" />
+          <input style={{ width: '500px' }} type="date" />
         </div>
         <div className="class-details-group">
           <label>Time</label>
-          <input style={{width: '500px'}} type="time" />
+          <input style={{ width: '500px' }} type="time" />
         </div>
-        
+
       </div>
     </div>
   </div>
@@ -81,7 +81,7 @@ export const CreateClassPage: React.FC = () => {
       showError('Please select a workout.');
       return;
     }
-    
+
     setSaving(true);
     // Convert date and time to epoch (seconds)
     const date = startDateTime ? startDateTime.toISOString().slice(0, 10) : '';
@@ -99,7 +99,7 @@ export const CreateClassPage: React.FC = () => {
       workoutId,
     };
     try {
-      const response = await fetch('http://localhost:8080/api/v1/class', {
+      const response = await fetch('https://firefly-admin.cozmotech.ie/api/v1/class', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -137,7 +137,7 @@ export const CreateClassPage: React.FC = () => {
             </span>
             <span className="assign-workout-card-dropdown">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7 10L12 15L17 10" stroke="#353535" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M7 10L12 15L17 10" stroke="#353535" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </span>
           </div>
@@ -181,7 +181,7 @@ export const CreateClassPage: React.FC = () => {
     const gymLocations = data?.data || [];
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const selectedGymLocation = gymLocations.find((g: any) => g.id === selectedGymLocationId);
-    
+
     return (
       <div className="assign-workout-section">
         <div className="assign-workout-label">Select Gym Location</div>
@@ -192,7 +192,7 @@ export const CreateClassPage: React.FC = () => {
             </span>
             <span className="assign-workout-card-dropdown">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7 10L12 15L17 10" stroke="#353535" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M7 10L12 15L17 10" stroke="#353535" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </span>
           </div>
@@ -251,7 +251,7 @@ export const CreateClassPage: React.FC = () => {
           <div className="class-details-row">
             <div className="class-details-group">
               <label>Class Name</label>
-              <input style={{width: '500px'}} type="text" placeholder="Enter class name" value={className} onChange={e => setClassName(e.target.value)} />
+              <input style={{ width: '500px' }} type="text" placeholder="Enter class name" value={className} onChange={e => setClassName(e.target.value)} />
             </div>
           </div>
           <div className="class-details-row">
@@ -272,12 +272,12 @@ export const CreateClassPage: React.FC = () => {
                   const now = new Date();
                   const minTime = new Date(now.getTime() + 5 * 60 * 1000);
                   const selectedDate = startDateTime || new Date();
-                  
+
                   // If selected date is today, filter out times before (now + 5 minutes)
                   if (selectedDate.toDateString() === now.toDateString()) {
                     return time.getTime() >= minTime.getTime();
                   }
-                  
+
                   // For future dates, allow all times
                   return true;
                 }}
@@ -289,7 +289,7 @@ export const CreateClassPage: React.FC = () => {
               />
             </div>
           </div>
-          
+
         </div>
       </div>
       <div style={{ display: 'flex', gap: '32px', alignItems: 'flex-start' }}>

@@ -21,7 +21,7 @@ export class TrainerService extends BaseApiService {
   constructor(config: { baseURL: string }) {
     super({
       ...config,
-      baseURL: 'http://localhost:8080',
+      baseURL: 'https://firefly-admin.cozmotech.ie',
       headers: {
         'token': 'FfbhuYx_pSVRl7npG8wQIw',
       },
@@ -47,8 +47,8 @@ export class TrainerService extends BaseApiService {
   async getAllTrainers(search: string = ''): Promise<ApiResponse<Trainer[]>> {
     try {
       const response = await this.api.get<ApiTrainerResponse>(`/api/v1/dashboard/trainers?name=${search}`);
-      
-      const trainers = response.data.data.panelUsers.map((apiTrainer, index) => 
+
+      const trainers = response.data.data.panelUsers.map((apiTrainer, index) =>
         this.transformApiTrainerToTrainer(apiTrainer, index)
       );
 

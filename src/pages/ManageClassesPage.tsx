@@ -23,7 +23,7 @@ export const ManageClassesPage: React.FC = () => {
         <h1>Manage Classes</h1>
         <button className="add-class-btn" onClick={() => navigate('/classes/create')}>+ Create New Class</button>
       </div>
-      <div className="scheduled-classes-title">Scheduled Classes</div>  
+      <div className="scheduled-classes-title">Scheduled Classes</div>
       <div className="class-table-wrapper">
         {isLoading && <div>Loading...</div>}
         {error && <div>Error loading classes</div>}

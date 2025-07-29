@@ -37,11 +37,11 @@ interface ClassBookingResponse {
 export const ViewClassPage: React.FC = () => {
   const { classId } = useParams<{ classId: string }>();
   const navigate = useNavigate();
-  
+
   const { data: response, isLoading } = useQuery<ClassBookingResponse>({
     queryKey: ['class-booking-details', classId],
     queryFn: async () => {
-      const res = await fetch(`http://localhost:8080/api/v1/class-bookings/details?classId=${classId}`, {
+      const res = await fetch(`https://firefly-admin.cozmotech.ie/api/v1/class-bookings/details?classId=${classId}`, {
         headers: {
           'token': 'FfbhuYx_pSVRl7npG8wQIw',
         },
@@ -58,13 +58,13 @@ export const ViewClassPage: React.FC = () => {
   const className = classBooking?.className || '-';
   const location = classBooking?.classLocation || '';
   const time = classBooking?.startEpoch
-    ? new Date(Number(classBooking.startEpoch) * 1000).toLocaleDateString('en-GB', { 
-        day: '2-digit', 
-        month: 'short', 
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: true 
-      }).replace(',', '')
+    ? new Date(Number(classBooking.startEpoch) * 1000).toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    }).replace(',', '')
     : '';
 
   const bookingUsers: BookingUser[] = classBooking?.bookingUsers || [];
@@ -75,10 +75,10 @@ export const ViewClassPage: React.FC = () => {
   const classEndEpoch = classBooking?.endEpoch || 0;
   const hasClassStarted = nowEpoch >= classStartEpoch;
   const hasClassEnded = nowEpoch >= classEndEpoch;
-  
+
   const initialCountdown = 0;
   const initialElapsed = 0;
-  
+
   const [countdown, setCountdown] = useState<number>(initialCountdown);
   const [elapsed, setElapsed] = useState<number>(initialElapsed);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -101,14 +101,14 @@ export const ViewClassPage: React.FC = () => {
 
   useEffect(() => {
     if (!classStartEpoch) return;
-    
+
     timerRef.current = setInterval(() => {
       const currentNow = Math.floor(Date.now() / 1000);
-      
+
       if (currentNow < classStartEpoch) {
         // Before class starts - countdown
         setCountdown(Math.max(classStartEpoch - currentNow, 0));
-      } else if (currentNow < classEndEpoch){
+      } else if (currentNow < classEndEpoch) {
         // After class starts - elapsed time
         setElapsed(currentNow - classStartEpoch);
         setCountdown(0);
@@ -170,7 +170,7 @@ export const ViewClassPage: React.FC = () => {
             >
               {/* Placeholder for Figma back icon */}
               <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M20 26L12 16L20 6" stroke="#FAFAFA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M20 26L12 16L20 6" stroke="#FAFAFA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
             <span className="view-class-header-title">Class View</span>
@@ -194,7 +194,7 @@ export const ViewClassPage: React.FC = () => {
                 {bookingUsers.length} {bookingUsers.length === 1 ? 'participant' : 'participants'}
               </div>
             </div>
-            
+
             <div className="modern-table">
               <div className="view-class-table-header-row">
                 <div className="view-class-table-header-cell">Name</div>
@@ -203,7 +203,7 @@ export const ViewClassPage: React.FC = () => {
                 <div className="view-class-table-header-cell">Round 2</div>
                 <div className="view-class-table-header-cell">Round 3</div>
               </div>
-              
+
               <div className="view-class-table-body">
                 {isLoading ? (
                   <div className="view-class-table-loading">
@@ -213,10 +213,10 @@ export const ViewClassPage: React.FC = () => {
                 ) : bookingUsers.length === 0 ? (
                   <div className="view-class-table-empty">
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                      <circle cx="9" cy="7" r="4"/>
-                      <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-                      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                     </svg>
                     <p>No participants booked for this class</p>
                   </div>
@@ -229,25 +229,25 @@ export const ViewClassPage: React.FC = () => {
                         </div>
                         <span className="client-name">{user.userName}</span>
                       </div>
-                      
+
                       <div className="view-class-table-cell view-class-status-cell">
                         <span className={`status-badge ${user.checkedInStatus.toLowerCase()}`}>
                           {user.checkedInStatus === 'CREATED' ? 'Booked' : user.checkedInStatus}
                         </span>
                       </div>
-                      
+
                       <div className="view-class-table-cell view-class-machine-cell">
                         <div className="machine-assignment">
                           <span className="machine-name">{user.round1Machine || 'N/A'}</span>
                         </div>
                       </div>
-                      
+
                       <div className="view-class-table-cell view-class-machine-cell">
                         <div className="machine-assignment">
                           <span className="machine-name">{user.round2Machine || 'N/A'}</span>
                         </div>
                       </div>
-                      
+
                       <div className="view-class-table-cell view-class-machine-cell">
                         <div className="machine-assignment">
                           <span className="machine-name">{user.round3Machine || 'N/A'}</span>
@@ -259,9 +259,9 @@ export const ViewClassPage: React.FC = () => {
               </div>
             </div>
           </div>
-                    {/* Timer/Stats Card */}
+          {/* Timer/Stats Card */}
           <div className="view-class-timer-section">
-          <div className="view-class-timer-circle">
+            <div className="view-class-timer-circle">
               {/* Placeholder for timer SVG/circular progress */}
               <span className="view-class-timer-time">
                 {hasClassStarted ? formatTime(elapsed) : formatTime(countdown)}

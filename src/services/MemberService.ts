@@ -29,7 +29,7 @@ export class MemberService extends BaseApiService {
   constructor(config: { baseURL: string }) {
     super({
       ...config,
-      baseURL: 'http://localhost:8080',
+      baseURL: 'https://firefly-admin.cozmotech.ie',
       headers: {
         'token': 'FfbhuYx_pSVRl7npG8wQIw',
       },
@@ -60,8 +60,8 @@ export class MemberService extends BaseApiService {
   async getAllMembers(page: number = 0, size: number = 10, search: string = ''): Promise<ApiResponse<MembersPaginatedResponse>> {
     try {
       const response = await this.api.get<ApiMemberResponse>(`/api/v1/dashboard/users?page=${page}&size=${size}&name=${search}`);
-      
-      const members = response.data.data.users.map((apiMember, index) => 
+
+      const members = response.data.data.users.map((apiMember, index) =>
         this.transformApiMemberToMember(apiMember, index + (page * size))
       );
 

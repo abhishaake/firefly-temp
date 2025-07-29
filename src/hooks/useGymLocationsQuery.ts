@@ -16,16 +16,16 @@ export function useGymLocationsQuery() {
   return useQuery<GymLocationsResponse>({
     queryKey: ['gym-locations'],
     queryFn: async () => {
-      const response = await fetch('http://localhost:8080/api/v1/gym-locations', {
+      const response = await fetch('https://firefly-admin.cozmotech.ie/api/v1/gym-locations', {
         headers: {
           'token': 'FfbhuYx_pSVRl7npG8wQIw',
         },
       });
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch gym locations');
       }
-      
+
       return response.json();
     },
   });

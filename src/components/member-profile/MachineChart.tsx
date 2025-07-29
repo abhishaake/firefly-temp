@@ -27,8 +27,8 @@ export const MachineChart: React.FC<MachineChartProps> = ({ machineSummary }) =>
       maxValue = Math.max(machineSummary.maxWattTarget, machineSummary.maxWatt);
       achievedValue = machineSummary.maxWatt;
     } else { // pace (250M time)
-      minValue = machineSummary.avgPaceMaxTarget;
-      maxValue = machineSummary.avgPaceMinTarget;
+      minValue = machineSummary.avgPaceMinTarget;
+      maxValue = machineSummary.avgPaceMaxTarget;
       achievedValue = machineSummary.time250;
     }
     

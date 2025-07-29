@@ -26,13 +26,13 @@ export const LoginPage = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('http://localhost:8080/api/app/auth/signIn', {
+      const response = await fetch('https://firefly-admin.cozmotech.ie/api/app/auth/signIn', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
-      if (response.ok && data.data?.token) { 
+      if (response.ok && data.data?.token) {
         setAuth(data.data.user, data.data.token);
       } else {
         setError(data.message || 'Invalid credentials');

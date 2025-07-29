@@ -14,7 +14,7 @@ const EditClassHeader: React.FC = () => {
     <div className="edit-class-header-row">
       <button className="back-arrow-btn" aria-label="Back" onClick={() => navigate('/manage-classes')}>
         <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M18 24L10 16L18 8" stroke="#353535" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M18 24L10 16L18 8" stroke="#353535" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
       <span className="edit-class-title">Edit Class</span>
@@ -26,10 +26,10 @@ export const EditClassPage: React.FC = () => {
   const { classId } = useParams<{ classId: string }>();
   const navigate = useNavigate();
   const { showError, showSuccess } = useToast();
-  
+
   // Fetch existing class data
   const { data: classData, isLoading: isLoadingClass, error: classError } = useClassDetailsQuery(classId);
-  
+
   // Form state
   const [className, setClassName] = useState('');
   const [description, setDescription] = useState('');
@@ -46,13 +46,13 @@ export const EditClassPage: React.FC = () => {
     if (classData) {
       setClassName(classData.className || '');
       setDescription(classData.description || '');
-      
+
       // Convert epoch to Date object
       if (classData.startTimeEpoch) {
         const startDate = new Date(parseInt(classData.startTimeEpoch) * 1000);
         setStartDateTime(startDate);
       }
-      
+
       // Parse gym location and workout from the class data
       // Note: You may need to adjust this based on your actual data structure
       // For now, we'll set defaults and let the user select from dropdowns
@@ -67,7 +67,7 @@ export const EditClassPage: React.FC = () => {
       showError('Class ID is missing.');
       return;
     }
-    
+
     // Validate required fields
     if (!selectedGymLocationId) {
       showError('Please select a gym location.');
@@ -77,13 +77,13 @@ export const EditClassPage: React.FC = () => {
       showError('Please select a workout.');
       return;
     }
-    
+
     setSaving(true);
     // Convert date and time to epoch (seconds)
     const date = startDateTime ? startDateTime.toISOString().slice(0, 10) : '';
     const startEpoch = startDateTime ? Math.floor(startDateTime.getTime() / 1000) : undefined;
     const endEpoch = startEpoch + 2700; // 45 minutes later
-    
+
     const payload = {
       className,
       description,
@@ -95,9 +95,9 @@ export const EditClassPage: React.FC = () => {
       gymLocation: selectedGymLocationId,
       workoutId,
     };
-    
+
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/class/${classId}`, {
+      const response = await fetch(`https://firefly-admin.cozmotech.ie/api/v1/class/${classId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -125,7 +125,7 @@ export const EditClassPage: React.FC = () => {
     const workouts = data?.data?.workouts || [];
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const selectedWorkout = workouts.find((w: any) => w.workoutId === workoutId);
-    
+
     return (
       <div className="assign-workout-section">
         <div className="assign-workout-label">Assign Workout</div>
@@ -136,7 +136,7 @@ export const EditClassPage: React.FC = () => {
             </span>
             <span className="assign-workout-card-dropdown">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7 10L12 15L17 10" stroke="#353535" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M7 10L12 15L17 10" stroke="#353535" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </span>
           </div>
@@ -180,7 +180,7 @@ export const EditClassPage: React.FC = () => {
     const gymLocations = data?.data || [];
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const selectedGymLocation = gymLocations.find((g: any) => g.id === selectedGymLocationId);
-    
+
     return (
       <div className="assign-workout-section">
         <div className="assign-workout-label">Select Gym Location</div>
@@ -191,7 +191,7 @@ export const EditClassPage: React.FC = () => {
             </span>
             <span className="assign-workout-card-dropdown">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7 10L12 15L17 10" stroke="#353535" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M7 10L12 15L17 10" stroke="#353535" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </span>
           </div>
@@ -266,12 +266,12 @@ export const EditClassPage: React.FC = () => {
           <div className="class-details-row">
             <div className="class-details-group">
               <label>Class Name</label>
-              <input 
-                style={{width: '500px'}} 
-                type="text" 
-                placeholder="Enter class name" 
-                value={className} 
-                onChange={e => setClassName(e.target.value)} 
+              <input
+                style={{ width: '500px' }}
+                type="text"
+                placeholder="Enter class name"
+                value={className}
+                onChange={e => setClassName(e.target.value)}
               />
             </div>
           </div>
@@ -293,12 +293,12 @@ export const EditClassPage: React.FC = () => {
                   const now = new Date();
                   const minTime = new Date(now.getTime() + 5 * 60 * 1000);
                   const selectedDate = startDateTime || new Date();
-                  
+
                   // If selected date is today, filter out times before (now + 5 minutes)
                   if (selectedDate.toDateString() === now.toDateString()) {
                     return time.getTime() >= minTime.getTime();
                   }
-                  
+
                   // For future dates, allow all times
                   return true;
                 }}

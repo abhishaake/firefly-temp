@@ -4,7 +4,7 @@ import { WorkoutService } from './WorkoutService';
 import { TrainerService } from './TrainerService';
 import { MemberService } from './MemberService';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://firefly-admin.cozmotech.ie/api';
 
 class ServiceFactory {
   private static instance: ServiceFactory;
@@ -18,8 +18,8 @@ class ServiceFactory {
     this.authService = new AuthService(API_BASE_URL);
     this.classService = new ClassService(API_BASE_URL);
     this.workoutService = new WorkoutService();
-    this.trainerService = new TrainerService({ baseURL: 'http://localhost:8080' });
-    this.memberService = new MemberService({ baseURL: 'http://localhost:8080' });
+    this.trainerService = new TrainerService({ baseURL: 'https://firefly-admin.cozmotech.ie' });
+    this.memberService = new MemberService({ baseURL: 'https://firefly-admin.cozmotech.ie' });
   }
 
   public static getInstance(): ServiceFactory {
