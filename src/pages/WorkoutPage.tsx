@@ -61,7 +61,7 @@ const WorkoutCard: React.FC<{ data: Workout }> = ({ data }) => {
 export const WorkoutPage: React.FC = () => {
   const navigate = useNavigate();
   const { data, isLoading, error } = useWorkoutsQuery();
-  const workouts = data?.data?.workouts;
+  const workouts = data?.workouts || [];
   console.log("data", workouts);
 
   return (

@@ -2,6 +2,7 @@ export interface ApiResponse<T> {
   data: T;
   message?: string;
   status: number;
+  success: boolean;
 }
 
 export interface PaginatedResponse<T> extends ApiResponse<T> {
@@ -12,13 +13,14 @@ export interface PaginatedResponse<T> extends ApiResponse<T> {
 
 export interface ApiError {
   message: string;
-  status: number;
+  status: string;
   errors?: Record<string, string[]>;
 }
 
 export interface LoginRequest {
   email: string;
   password: string;
+  type: 'ADMIN' | 'TRAINER';
 }
 
 export interface LoginResponse {
@@ -29,6 +31,10 @@ export interface LoginResponse {
     role: string;
   };
   token: string;
+}
+
+export interface LoginApiResponse extends ApiResponse<LoginResponse> {
+  data: LoginResponse;
 }
 
 export interface ApiConfig {

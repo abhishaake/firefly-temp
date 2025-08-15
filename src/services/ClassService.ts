@@ -10,6 +10,7 @@ const mockClasses: ClassItem[] = [
     startTimeEpoch: '1715580600', // Example epoch for 11:30 AM
     trainer: 'Anna Rowe',
     gymLocation: 'Dublin Central',
+    workoutId: 1,
     workoutName: 'Workout Block 1',
     description: 'Mobility class',
   },
@@ -20,6 +21,7 @@ const mockClasses: ClassItem[] = [
     startTimeEpoch: '1715589600', // Example epoch for 01:00 PM
     trainer: 'Anna Rowe',
     gymLocation: 'Galway Bay',
+    workoutId: 2,
     workoutName: 'Workout Block 1',
     description: 'Cardio class',
   },
@@ -30,6 +32,7 @@ const mockClasses: ClassItem[] = [
     startTimeEpoch: '1715661600', // Example epoch for 10:00 AM
     trainer: 'Anna Rowe',
     gymLocation: 'Cork Quay',
+    workoutId: 3,
     workoutName: 'Workout Block 1',
     description: 'Mobility class',
   },
@@ -40,6 +43,7 @@ const mockClasses: ClassItem[] = [
     startTimeEpoch: '1715661600', // Example epoch for 10:00 AM
     trainer: 'Anna Rowe',
     gymLocation: 'Dublin Central',
+    workoutId: 4,
     workoutName: 'Workout Block 1',
     description: 'Cardio class',
   },
@@ -50,6 +54,7 @@ const mockClasses: ClassItem[] = [
     startTimeEpoch: '1715661600', // Example epoch for 10:00 AM
     trainer: 'Anna Rowe',
     gymLocation: 'Limerick Park',
+    workoutId: 5,
     workoutName: 'Workout Block 1',
     description: 'Endurance class',
   },
@@ -57,7 +62,7 @@ const mockClasses: ClassItem[] = [
 
 export class ClassService extends BaseApiService {
   constructor() {
-    super({ baseURL: 'https://firefly-admin.cozmotech.ie' });
+    super({ baseURL: 'https://firefly-admin.cozmotech.ie/api' });
   }
 
   async getClasses(): Promise<ApiResponse<ClassItem[]>> {
@@ -73,36 +78,77 @@ export class ClassService extends BaseApiService {
   }
 
   async getAvailableClasses(): Promise<ApiResponse<ClassItem[]>> {
-    const response = await fetch('https://firefly-admin.cozmotech.ie/api/app/class/available', {
-      headers: {
-        'token': 'FfbhuYx_pSVRl7npG8wQIw',
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Failed to fetch available classes');
+    try {
+      return await this.get<ClassItem[]>('/app/class/available');
+    } catch (error: any) {
+      return {
+        data: [],
+        status: 500,
+        message: error.message || 'Failed to fetch available classes',
+      };
     }
-    const data = await response.json();
-    return {
-      data: data.data || [],
-      status: response.status,
-      message: data.message || '',
-    };
   }
 
   async getClassById(classId: string): Promise<ApiResponse<ClassItem>> {
-    const response = await fetch(`https://firefly-admin.cozmotech.ie/api/v1/class/${classId}`, {
-      headers: {
-        'token': 'FfbhuYx_pSVRl7npG8wQIw',
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Failed to fetch class details');
+    try {
+      return await this.get<ClassItem>(`/v1/class/${classId}`);
+    } catch (error: any) {
+      return {
+        data: {} as ClassItem,
+        status: 500,
+        message: error.message || 'Failed to fetch class details',
+      };
     }
-    const data = await response.json();
-    return {
-      data: data.data,
-      status: response.status,
-      message: data.message || '',
-    };
+  }
+
+  async getClassBookingDetails(classId: string): Promise<ApiResponse<any>> {
+    try {
+      return await this.get<any>(`/v1/class-bookings/details?classId=${classId}`);
+    } catch (error: any) {
+      return {
+        data: null,
+        status: 500,
+        message: error.message || 'Failed to fetch class booking details',
+      };
+    }
+  }
+
+  async getGymLocations(): Promise<ApiResponse<any[]>> {
+    try {
+      return await this.get<any[]>('/v1/gym-locations');
+    } catch (error: any) {
+      return {
+        data: [],
+        status: 500,
+        success: false,
+        message: error.message || 'Failed to fetch gym locations',
+      };
+    }
+  }
+
+  async createClass(classData: any): Promise<ApiResponse<any>> {
+    try {
+      return await this.post<any>('/v1/class', classData);
+    } catch (error: any) {
+      return {
+        data: null,
+        status: 500,
+        success: false,
+        message: error.message || 'Failed to create class',
+      };
+    }
+  }
+
+  async updateClass(classId: string, classData: any): Promise<ApiResponse<any>> {
+    try {
+      return await this.put<any>(`/v1/class/${classId}`, classData);
+    } catch (error: any) {
+      return {
+        data: null,
+        status: 500,
+        success: false,
+        message: error.message || 'Failed to update class',
+      };
+    }
   }
 } 

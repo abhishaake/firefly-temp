@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { ToastProvider } from './contexts/ToastContext';
+import { AuthProvider } from './contexts/AuthProvider';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { LoginPage } from './pages/LoginPage';
 import { ManageClassesPage } from './pages/ManageClassesPage';
@@ -34,78 +35,80 @@ function App() {
       <MantineProvider>
         <Notifications />
         <ToastProvider>
-          <Router>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route 
-              path="/*" 
-              element={
-                <ProtectedRoute>
-                  <CustomMainLayout>
-                    <Routes>
-                      <Route path="/" element={<Navigate to="/manage-classes" replace />} />
-                      <Route path="/manage-classes" element={<ManageClassesPage />} />
-                      <Route path="/workouts" element={<WorkoutPage />} />
-                      <Route path="/manage-trainer" element={<ManageTrainerPage />} />
-                      <Route path="/members" element={<ManageMembersPage />} />
-                      <Route path="/member-profile/:userId" element={<MemberProfilePage />} />
-                    </Routes>
-                  </CustomMainLayout>
-                </ProtectedRoute>
-              } 
-            />
-            <Route
-              path="/workout/create"
-              element={
-                <ProtectedRoute>
-                  <CustomMainLayout>
-                    <CreateWorkoutPage />
-                  </CustomMainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/classes/create"
-              element={
-                <ProtectedRoute>
-                  <CustomMainLayout>
-                    <CreateClassPage />
-                  </CustomMainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/classes/edit/:classId"
-              element={
-                <ProtectedRoute>
-                  <CustomMainLayout>
-                    <EditClassPage />
-                  </CustomMainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/classes/:classId"
-              element={
-                <ProtectedRoute>
-                  {/* <CustomMainLayout> */}
-                    <ViewClassPage />
-                  {/* </CustomMainLayout> */}
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/customers"
-              element={
-                <ProtectedRoute>
-                  <CustomMainLayout>
-                    <div>Customers Page</div>
-                  </CustomMainLayout>
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </Router>
+          <AuthProvider>
+            <Router>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route 
+                path="/*" 
+                element={
+                  <ProtectedRoute>
+                    <CustomMainLayout>
+                      <Routes>
+                        <Route path="/" element={<Navigate to="/login" replace />} />
+                        <Route path="/manage-classes" element={<ManageClassesPage />} />
+                        <Route path="/workouts" element={<WorkoutPage />} />
+                        <Route path="/manage-trainer" element={<ManageTrainerPage />} />
+                        <Route path="/members" element={<ManageMembersPage />} />
+                        <Route path="/member-profile/:userId" element={<MemberProfilePage />} />
+                      </Routes>
+                    </CustomMainLayout>
+                  </ProtectedRoute>
+                } 
+              />
+              <Route
+                path="/workout/create"
+                element={
+                  <ProtectedRoute>
+                    <CustomMainLayout>
+                      <CreateWorkoutPage />
+                    </CustomMainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/classes/create"
+                element={
+                  <ProtectedRoute>
+                    <CustomMainLayout>
+                      <CreateClassPage />
+                    </CustomMainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/classes/edit/:classId"
+                element={
+                  <ProtectedRoute>
+                    <CustomMainLayout>
+                      <EditClassPage />
+                    </CustomMainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/classes/:classId"
+                element={
+                  <ProtectedRoute>
+                    {/* <CustomMainLayout> */}
+                      <ViewClassPage />
+                    {/* </CustomMainLayout> */}
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/customers"
+                element={
+                  <ProtectedRoute>
+                    <CustomMainLayout>
+                      <div>Customers Page</div>
+                    </CustomMainLayout>
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+            </Router>
+          </AuthProvider>
         </ToastProvider>
       </MantineProvider>
       <ReactQueryDevtools initialIsOpen={false} />

@@ -16,15 +16,10 @@ interface ApiTrainerResponse {
 }
 
 export class TrainerService extends BaseApiService {
-  private readonly API_TOKEN = 'FfbhuYx_pSVRl7npG8wQIw';
-
-  constructor(config: { baseURL: string }) {
+  constructor() {
     super({
-      ...config,
       baseURL: 'https://firefly-admin.cozmotech.ie',
-      headers: {
-        'token': 'FfbhuYx_pSVRl7npG8wQIw',
-      },
+      timeout: 15000,
     });
   }
 

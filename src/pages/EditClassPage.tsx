@@ -5,6 +5,7 @@ import { useGymLocationsQuery } from '../hooks/useGymLocationsQuery';
 import { useToast } from '../contexts/ToastContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useClassDetailsQuery } from '../hooks/useApi';
+import { services } from '../services';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -97,20 +98,12 @@ export const EditClassPage: React.FC = () => {
     };
 
     try {
-      const response = await fetch(`https://firefly-admin.cozmotech.ie/api/v1/class/${classId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'token': 'FfbhuYx_pSVRl7npG8wQIw',
-        },
-        body: JSON.stringify(payload),
-      });
-      const data = await response.json();
-      if (response.ok) {
+      const response = await services.getClassService().updateClass(classId, payload);
+      if (response.success === true) {
         showSuccess('Class updated successfully!');
         navigate('/manage-classes');
       } else {
-        showError(data.message || 'Failed to update class');
+        showError(response.message || 'Failed to update class');
       }
     } catch (err: any) {
       showError(err.message || 'Failed to update class');
@@ -122,7 +115,7 @@ export const EditClassPage: React.FC = () => {
   // AssignWorkoutSection as inner component to access setWorkoutId
   const AssignWorkoutSection: React.FC = () => {
     const { data, isLoading, error } = useWorkoutsQuery();
-    const workouts = data?.data?.workouts || [];
+    const workouts = data?.workouts || [];
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const selectedWorkout = workouts.find((w: any) => w.workoutId === workoutId);
 

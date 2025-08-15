@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { services } from '../services';
 
 interface GymLocation {
   id: number;
@@ -16,17 +17,13 @@ export function useGymLocationsQuery() {
   return useQuery<GymLocationsResponse>({
     queryKey: ['gym-locations'],
     queryFn: async () => {
-      const response = await fetch('https://firefly-admin.cozmotech.ie/api/v1/gym-locations', {
-        headers: {
-          'token': 'FfbhuYx_pSVRl7npG8wQIw',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch gym locations');
-      }
-
-      return response.json();
+      const response = await services.getClassService().getGymLocations();
+      return {
+        data: response.data,
+        success: response.status === 200,
+        statusCode: response.status,
+        message: response.message,
+      };
     },
   });
 } 

@@ -58,14 +58,8 @@ export function useClassBookingDetailsQuery(classId?: string) {
     queryKey: ['class-booking-details', classId],
     queryFn: async () => {
       if (!classId) return null;
-      const response = await fetch(`https://firefly-admin.cozmotech.ie/api/v1/class-bookings/details?classId=${classId}`, {
-        headers: {
-          'token': 'FfbhuYx_pSVRl7npG8wQIw',
-        },
-      });
-      if (!response.ok) throw new Error('Failed to fetch class booking details');
-      const data = await response.json();
-      return data.data?.classBooking;
+      const response = await services.getClassService().getClassBookingDetails(classId);
+      return response.data?.classBooking || null;
     },
     enabled: !!classId,
   });

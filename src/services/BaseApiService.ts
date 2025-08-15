@@ -21,9 +21,19 @@ export class BaseApiService {
   protected setupInterceptors(): void {
     this.api.interceptors.request.use(
       (config) => {
+        // Don't add Authorization header for login requests
+        if (config.url?.includes('/signIn')) {
+          console.log('Login request - skipping Authorization header');
+          return config;
+        }
+        
         const token = localStorage.getItem('auth_token');
+        console.log('Token from localStorage:', token ? 'Token exists' : 'No token found');
         if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
+          config.headers.token = token;
+          console.log('Authorization header set:', `Bearer ${token.substring(0, 20)}...`);
+        } else {
+          console.log('No token found, skipping Authorization header');
         }
         return config;
       },
@@ -33,7 +43,9 @@ export class BaseApiService {
     this.api.interceptors.response.use(
       (response) => response,
       (error) => {
+        console.log('API Response Error:', error.response?.status, error.response?.data);
         if (error.response?.status === 401) {
+          console.log('401 Unauthorized - clearing token and redirecting to login');
           localStorage.removeItem('auth_token');
           window.location.href = '/login';
         }
@@ -52,7 +64,7 @@ export class BaseApiService {
     }
     return {
       message: error.message || 'Network error',
-      status: 0,
+      status: '0',
     };
   }
 

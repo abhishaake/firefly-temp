@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Card, Loader } from '@mantine/core';
+import { services } from '../services';
 import '../styles/manage-classes.css';
 import '../styles/custom-layout.css';
 import '../styles/view-class-page.css';
@@ -41,13 +42,13 @@ export const ViewClassPage: React.FC = () => {
   const { data: response, isLoading } = useQuery<ClassBookingResponse>({
     queryKey: ['class-booking-details', classId],
     queryFn: async () => {
-      const res = await fetch(`https://firefly-admin.cozmotech.ie/api/v1/class-bookings/details?classId=${classId}`, {
-        headers: {
-          'token': 'FfbhuYx_pSVRl7npG8wQIw',
-        },
-      });
-      if (!res.ok) throw new Error('Failed to fetch class details');
-      return res.json();
+      const res = await services.getClassService().getClassBookingDetails(classId!);
+      return {
+        data: res.data,
+        success: res.status === 200,
+        statusCode: res.status,
+        message: res.message,
+      };
     },
     enabled: !!classId,
   });

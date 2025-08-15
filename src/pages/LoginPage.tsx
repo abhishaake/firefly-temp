@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/workout.css';
 import { useAuthStore } from '../store/authStore';
+import { AuthService } from '../services/AuthService';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -9,35 +10,69 @@ export const LoginPage = () => {
   const from = location.state?.from?.pathname || '/';
   const setAuth = useAuthStore(state => state.setAuth);
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+  const isInitialized = useAuthStore(state => state.isInitialized);
+  const debugToken = useAuthStore(state => state.debugToken);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [userType, setUserType] = useState<'ADMIN' | 'TRAINER'>('ADMIN');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const authService = new AuthService();
+
   useEffect(() => {
-    if (isAuthenticated) {
+    // Only redirect if authentication is initialized and user is authenticated
+    if (isInitialized && isAuthenticated) {
       navigate('/manage-classes', { replace: true });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, isInitialized, navigate]);
+
+  // Show loading while authentication is being initialized
+  if (!isInitialized) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        width: '100vw', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        background: '#1D1327', 
+        position: 'fixed', 
+        top: 0, 
+        left: 0 
+      }}>
+        <div style={{ color: '#fff', fontSize: 18 }}>Initializing...</div>
+      </div>
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('https://firefly-admin.cozmotech.ie/api/app/auth/signIn', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+      console.log('Sending login request with:', { email, userType });
+      const response = await authService.signIn({ 
+        email, 
+        password, 
+        type: userType 
       });
-      const data = await response.json();
-      if (response.ok && data.data?.token) {
-        setAuth(data.data.user, data.data.token);
+      console.log('Login response:', response);
+      
+      // Check for token in the response
+      const token = response.data?.token;
+      const user = response.data?.user;
+      
+      if (token) {
+        console.log('Token received, storing in auth store');
+        setAuth(user, token);
+        console.log('Token stored in localStorage:', localStorage.getItem('auth_token') ? 'Yes' : 'No');
       } else {
-        setError(data.message || 'Invalid credentials');
+        setError(response.message || 'Invalid credentials');
       }
     } catch (err: any) {
+      console.error('Login error:', err);
       setError(err.message || 'Login failed');
     } finally {
       setLoading(false);
@@ -70,6 +105,29 @@ export const LoginPage = () => {
       }}>
         <div style={{ fontSize: 28, fontWeight: 700, marginBottom: 24, textAlign: 'center', color: '#584769' }}>Welcome back!</div>
         <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom: 20 }}>
+            <label style={{ display: 'block', fontWeight: 600, marginBottom: 8, color: '#353535' }}>User Type</label>
+            <select
+              value={userType}
+              onChange={e => setUserType(e.target.value as 'ADMIN' | 'TRAINER')}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                borderRadius: 8,
+                border: '1px solid #E0E0E0',
+                fontSize: 16,
+                fontFamily: 'inherit',
+                background: '#F9F5FD',
+                color: '#353535',
+                outline: 'none',
+                boxSizing: 'border-box',
+                cursor: 'pointer',
+              }}
+            >
+              <option value="ADMIN">Admin</option>
+              <option value="TRAINER">Trainer</option>
+            </select>
+          </div>
           <div style={{ marginBottom: 20 }}>
             <label style={{ display: 'block', fontWeight: 600, marginBottom: 8, color: '#353535' }}>Email</label>
             <input

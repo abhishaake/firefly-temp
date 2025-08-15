@@ -6,7 +6,12 @@ import type { Workout } from '../types/workout';
 export function useWorkoutsQuery() {
   return useQuery<WorkoutWrapper>({
     queryKey: ['workouts'],
-    queryFn: () => services.getWorkoutService().getWorkouts().then(res => res.data),
+    queryFn: () => services.getWorkoutService()
+    .getWorkouts()
+    .then(res => {
+      console.log('useWorkoutsQuery - fetched workouts:', res.data);
+      return res.data;
+    }),
   });
 }
 

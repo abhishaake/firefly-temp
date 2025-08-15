@@ -1,29 +1,26 @@
 import { BaseApiService } from './BaseApiService';
-import type { LoginRequest, LoginResponse, ApiResponse } from '../types/api';
+import type { ApiResponse, LoginRequest, LoginResponse, LoginApiResponse } from '../types/api';
 
 export class AuthService extends BaseApiService {
-  constructor(baseURL: string) {
-    super({ baseURL });
+  constructor() {
+    super({ 
+      baseURL: 'https://firefly-admin.cozmotech.ie/api/app/auth',
+      timeout: 10000 
+    });
   }
 
-  async login(credentials: LoginRequest): Promise<ApiResponse<LoginResponse>> {
-    const response = await this.post<LoginResponse>('/auth/login', credentials);
+  async signIn(credentials: LoginRequest): Promise<LoginApiResponse> {
+    console.log('AuthService.signIn called with:', credentials);
+    const response = await this.post<LoginResponse>('/dashboard/signIn', credentials);
+    console.log('AuthService.signIn response:', response);
     return response;
   }
 
-  async logout(): Promise<ApiResponse<void>> {
-    const response = await this.post<void>('/auth/logout');
-    localStorage.removeItem('auth_token');
-    return response;
+  async signOut(): Promise<ApiResponse<void>> {
+    return this.post<void>('/signOut');
   }
 
-  async refreshToken(): Promise<ApiResponse<LoginResponse>> {
-    const response = await this.post<LoginResponse>('/auth/refresh');
-    return response;
-  }
-
-  async getCurrentUser(): Promise<ApiResponse<LoginResponse['user']>> {
-    const response = await this.get<LoginResponse['user']>('/auth/me');
-    return response;
+  async refreshToken(): Promise<ApiResponse<{ token: string }>> {
+    return this.post<{ token: string }>('/refresh');
   }
 } 

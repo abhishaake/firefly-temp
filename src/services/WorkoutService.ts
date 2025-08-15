@@ -1,32 +1,24 @@
+import { BaseApiService } from './BaseApiService';
 import type { ApiResponse } from '../types/api';
 import type { Workout } from '../types/workout';
 import type { WorkoutWrapper } from '../types/workoutWrapper';
 
-const API_URL = 'https://firefly-admin.cozmotech.ie/api/v1/workouts';
-const API_TOKEN = 'FfbhuYx_pSVRl7npG8wQIw';
+export class WorkoutService extends BaseApiService {
+  constructor() {
+    super({ 
+      baseURL: 'https://firefly-admin.cozmotech.ie/api/v1',
+      timeout: 15000 
+    });
+  }
 
-export class WorkoutService {
   async getWorkouts(): Promise<ApiResponse<WorkoutWrapper>> {
     try {
-      const response = await fetch(API_URL, {
-        headers: {
-          'token': API_TOKEN,
-        },
-      });
-      if (!response.ok) {
-        throw new Error('Failed to fetch workouts');
-      }
-      const data = await response.json();
-      // If the API returns workouts directly, use data; otherwise, adjust as needed
-      return {
-        data: data as WorkoutWrapper,
-        status: response.status,
-        message: 'Fetched from remote API',
-      };
+      return await this.get<WorkoutWrapper>('/workouts');
     } catch (error: any) {
       return {
         data: {} as WorkoutWrapper,
         status: 500,
+        success: false,
         message: error.message || 'Error fetching workouts',
       };
     }
@@ -34,25 +26,39 @@ export class WorkoutService {
 
   async getWorkoutDetails(workoutId: number): Promise<ApiResponse<Workout>> {
     try {
-      const response = await fetch(`https://firefly-admin.cozmotech.ie/api/v1/workouts/details?workoutId=${workoutId}`, {
-        headers: {
-          'token': API_TOKEN,
-        },
-      });
-      if (!response.ok) {
-        throw new Error('Failed to fetch workout details');
-      }
-      const data = await response.json();
-      return {
-        data: data.data as Workout,
-        status: response.status,
-        message: 'Fetched workout details from remote API',
-      };
+      return await this.get<Workout>(`/workouts/details?workoutId=${workoutId}`);
     } catch (error: any) {
       return {
         data: {} as Workout,
         status: 500,
+        success: false,
         message: error.message || 'Error fetching workout details',
+      };
+    }
+  }
+
+  async createWorkout(workoutData: any): Promise<ApiResponse<any>> {
+    try {
+      return await this.post<any>('/workouts', workoutData);
+    } catch (error: any) {
+      return {
+        data: null,
+        status: 500,
+        success: false,
+        message: error.message || 'Error creating workout',
+      };
+    }
+  }
+
+  async updateWorkout(workoutId: number, workoutData: any): Promise<ApiResponse<any>> {
+    try {
+      return await this.put<any>(`/workouts/${workoutId}/complete`, workoutData);
+    } catch (error: any) {
+      return {
+        data: null,
+        status: 500,
+        success: false,
+        message: error.message || 'Error updating workout',
       };
     }
   }

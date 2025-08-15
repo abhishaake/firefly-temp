@@ -5,6 +5,8 @@ import { useWorkoutDetailsQuery } from '../hooks/useWorkoutsQuery';
 import type { Workout } from '../types/workout';
 import type { WorkoutRound } from '../types/workoutRounds';
 import type { WorkoutBlock } from '../types/workoutBlocks';
+import { services } from '../services';
+import { useToast } from '../contexts/ToastContext';
 
 const PROMPT_OPTIONS = ['WARMUP', 'RECOVERY', 'REST', 'STAIRS', 'HOLD'];
 const METRIC_OPTIONS = ['WATTS', 'METERS', 'CALORIES'];
@@ -25,6 +27,7 @@ export const CreateWorkoutPage: React.FC = () => {
   const navigate = useNavigate();
   const params = useParams<{ workoutId?: string }>();
   const location = useLocation();
+  const { showError, showSuccess } = useToast();
   let workoutId = params.workoutId ? Number(params.workoutId) : location.state?.workoutId;
   let cloneFromWorkoutId: number | undefined;
 
@@ -216,15 +219,17 @@ export const CreateWorkoutPage: React.FC = () => {
   const handleSave = async () => {
     // Validate that each round has exactly 2 minutes (120 seconds)
     const validationErrors: string[] = [];
+    let isError = false;
     workoutDTO.workoutRounds.forEach((round, index) => {
       const totalDuration = round.workoutBlocks.reduce((sum, block) => sum + block.durationSeconds, 0);
       if (totalDuration !== 120) {
-        validationErrors.push(`${round.name} total duration is ${totalDuration} seconds. It must be exactly 120 seconds (2 minutes).`);
+        isError = true;
+        showError(`${round.name} total duration is ${totalDuration} seconds. It must be exactly 120 seconds (2 minutes).`);
+        // validationErrors.push(`${round.name} total duration is ${totalDuration} seconds. It must be exactly 120 seconds (2 minutes).`);
       }
     });
 
-    if (validationErrors.length > 0) {
-      setError(validationErrors.join(' '));
+    if (isError) {
       return;
     }
 
@@ -257,32 +262,18 @@ export const CreateWorkoutPage: React.FC = () => {
       // Only use PUT endpoint if we have workoutId AND it's not a clone operation
       if (workoutId && !cloneFromWorkoutId) {
         // Edit existing workout - use PUT endpoint
-        response = await fetch(`https://firefly-admin.cozmotech.ie/api/v1/workouts/${workoutId}/complete`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'token': 'FfbhuYx_pSVRl7npG8wQIw',
-          },
-          body: JSON.stringify(payload),
-        });
+        response = await services.getWorkoutService().updateWorkout(workoutId, payload);
       } else {
         // Create new workout (including clones) - use POST endpoint
-        response = await fetch('https://firefly-admin.cozmotech.ie/api/v1/workouts', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'token': 'FfbhuYx_pSVRl7npG8wQIw',
-          },
-          body: JSON.stringify(payload),
-        });
+        response = await services.getWorkoutService().createWorkout(payload);
       }
 
-      const data = await response.json();
-      if (response.ok) {
+      if (response.success == true) {
+        showSuccess('Workout created successfully!');
         navigate('/workouts');
       } else {
         const isEdit = workoutId && !cloneFromWorkoutId;
-        setError(data.message || `Failed to ${isEdit ? 'update' : 'create'} workout`);
+        setError(response.message || `Failed to ${isEdit ? 'update' : 'create'} workout`);
       }
     } catch (error: any) {
       const isEdit = workoutId && !cloneFromWorkoutId;
