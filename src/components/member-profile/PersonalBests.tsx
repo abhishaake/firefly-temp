@@ -18,6 +18,12 @@ export const PersonalBests: React.FC<PersonalBestsProps> = ({ userProfile }) => 
     return Math.round(value).toLocaleString();
   };
 
+  const formatDistance = (value: number): string => {
+    if (value === 0) return '0';
+    if (value < 1000) return Math.round(value).toLocaleString(); + " M";
+    return Math.round(value / 1000).toLocaleString() + " KM";
+  }
+
   return (
     <div className="personal-bests">
       <h2 className="personal-bests-title">Personal Bests</h2>
@@ -33,9 +39,9 @@ export const PersonalBests: React.FC<PersonalBestsProps> = ({ userProfile }) => 
         <div className="personal-best-card">
           <div className="personal-best-label">
             <div>TOTAL</div>
-            <div>METERS</div>
+            <div>DISTANCE</div>
           </div>
-          <div className="personal-best-value">{formatNumber(userProfile.totalMeters)}</div>
+          <div className="personal-best-value">{formatDistance(userProfile.totalMeters)}</div>
         </div>
         
         <div className="personal-best-card">

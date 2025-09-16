@@ -1,4 +1,6 @@
 import { BaseApiService } from './BaseApiService';
+import { API_CONFIG } from './config';
+import { createErrorResponse } from './utils';
 import type { Member, CreateMemberRequest, UpdateMemberRequest, MembersPaginatedResponse } from '../types/member';
 import type { ApiResponse } from '../types/api';
 
@@ -26,8 +28,8 @@ interface ApiMemberResponse {
 export class MemberService extends BaseApiService {
   constructor() {
     super({
-      baseURL: 'https://firefly-admin.cozmotech.ie',
-      timeout: 15000,
+      baseURL: API_CONFIG.getUrl(API_CONFIG.ENDPOINTS.DEFAULT),
+      timeout: API_CONFIG.DEFAULT_TIMEOUT,
     });
   }
 
@@ -54,7 +56,7 @@ export class MemberService extends BaseApiService {
 
   async getAllMembers(page: number = 0, size: number = 10, search: string = ''): Promise<ApiResponse<MembersPaginatedResponse>> {
     try {
-      const response = await this.api.get<ApiMemberResponse>(`/api/v1/dashboard/users?page=${page}&size=${size}&name=${search}`);
+      const response = await this.api.get<ApiMemberResponse>(`/dashboard/members/users?page=${page}&size=${size}&name=${search}`);
 
       const members = response.data.data.users.map((apiMember, index) =>
         this.transformApiMemberToMember(apiMember, index + (page * size))
@@ -71,29 +73,10 @@ export class MemberService extends BaseApiService {
         data: paginatedResponse,
         status: response.data.statusCode,
         message: response.data.message,
+        success: response.data.success,
       };
     } catch (error) {
       throw new Error(`Failed to fetch members: ${error}`);
     }
-  }
-
-  async getMemberById(id: string): Promise<ApiResponse<Member>> {
-    // TODO: Implement when API endpoint is available
-    throw new Error('getMemberById API endpoint not implemented');
-  }
-
-  async createMember(member: CreateMemberRequest): Promise<ApiResponse<Member>> {
-    // TODO: Implement when API endpoint is available
-    throw new Error('createMember API endpoint not implemented');
-  }
-
-  async updateMember(member: UpdateMemberRequest): Promise<ApiResponse<Member>> {
-    // TODO: Implement when API endpoint is available
-    throw new Error('updateMember API endpoint not implemented');
-  }
-
-  async deleteMember(id: string): Promise<ApiResponse<void>> {
-    // TODO: Implement when API endpoint is available
-    throw new Error('deleteMember API endpoint not implemented');
   }
 } 

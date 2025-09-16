@@ -28,9 +28,10 @@ export const EditClassPage: React.FC = () => {
   const navigate = useNavigate();
   const { showError, showSuccess } = useToast();
 
+  console.log("classId : ", classId);
   // Fetch existing class data
-  const { data: classData, isLoading: isLoadingClass, error: classError } = useClassDetailsQuery(classId);
-
+  const { data, isLoading, error } = useClassDetailsQuery(classId);
+  console.log("data", data);
   // Form state
   const [className, setClassName] = useState('');
   const [description, setDescription] = useState('');
@@ -44,23 +45,23 @@ export const EditClassPage: React.FC = () => {
 
   // Pre-fill form when class data is loaded
   useEffect(() => {
-    if (classData) {
-      setClassName(classData.className || '');
-      setDescription(classData.description || '');
+    if (data) {
+      setClassName(data.className || '');
+      setDescription(data.description || '');
 
       // Convert epoch to Date object
-      if (classData.startTimeEpoch) {
-        const startDate = new Date(parseInt(classData.startTimeEpoch) * 1000);
+      if (data.startTimeEpoch) {
+        const startDate = new Date(data.startTimeEpoch * 1000);
         setStartDateTime(startDate);
       }
 
       // Parse gym location and workout from the class data
       // Note: You may need to adjust this based on your actual data structure
       // For now, we'll set defaults and let the user select from dropdowns
-      setSelectedGymLocationId(parseInt(classData.gymLocation));
-      setWorkoutId(classData.workoutId);
+      setSelectedGymLocationId(data.gymLocation);
+      setWorkoutId(data.workoutId);
     }
-  }, [classData]);
+  }, [data]);
 
   // Save handler
   const handleSave = async () => {
@@ -83,7 +84,7 @@ export const EditClassPage: React.FC = () => {
     // Convert date and time to epoch (seconds)
     const date = startDateTime ? startDateTime.toISOString().slice(0, 10) : '';
     const startEpoch = startDateTime ? Math.floor(startDateTime.getTime() / 1000) : undefined;
-    const endEpoch = startEpoch + 2700; // 45 minutes later
+    const endEpoch = startEpoch + 360; // 45 minutes later
 
     const payload = {
       className,
@@ -170,7 +171,7 @@ export const EditClassPage: React.FC = () => {
   // AssignGymLocationSection as inner component to access setSelectedGymLocationId
   const AssignGymLocationSection: React.FC = () => {
     const { data, isLoading, error } = useGymLocationsQuery();
-    const gymLocations = data?.data || [];
+    const gymLocations = data?.locations || [];
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const selectedGymLocation = gymLocations.find((g: any) => g.id === selectedGymLocationId);
 
@@ -222,7 +223,7 @@ export const EditClassPage: React.FC = () => {
     );
   };
 
-  if (isLoadingClass) {
+  if (isLoading) {
     return (
       <div className="edit-class-page-root">
         <div>Loading class details...</div>
@@ -230,7 +231,7 @@ export const EditClassPage: React.FC = () => {
     );
   }
 
-  if (classError) {
+  if (error) {
     return (
       <div className="edit-class-page-root">
         <div>Error loading class details</div>

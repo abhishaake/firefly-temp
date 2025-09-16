@@ -29,7 +29,7 @@ export const MemberProfilePage: React.FC = () => {
     );
   }
 
-  if (error || !profileData?.success) {
+  if (error || !profileData) {
     return (
       <div className="member-profile-page">
         <div className="error-container">
@@ -40,7 +40,7 @@ export const MemberProfilePage: React.FC = () => {
     );
   }
 
-  const { userInfo, machineSummaryList, userProfile } = profileData.data;
+  const { userInfo, machineSummaryList, userProfile } = profileData;
 
   return (
     <div className="member-profile-page">

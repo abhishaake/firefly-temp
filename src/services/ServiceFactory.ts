@@ -4,6 +4,9 @@ import { WorkoutService } from './WorkoutService';
 import { TrainerService } from './TrainerService';
 import { MemberService } from './MemberService';
 import { MemberProfileService } from './MemberProfileService';
+import { UserService } from './UserService';
+import { MachineService } from './MachineService';
+import { MediaService } from './MediaService';
 
 export class ServiceFactory {
   private static authService: AuthService;
@@ -12,6 +15,9 @@ export class ServiceFactory {
   private static trainerService: TrainerService;
   private static memberService: MemberService;
   private static memberProfileService: MemberProfileService;
+  private static userService: UserService;
+  private static machineService: MachineService;
+  private static mediaService: MediaService;
 
   static getAuthService(): AuthService {
     if (!this.authService) {
@@ -53,5 +59,26 @@ export class ServiceFactory {
       this.memberProfileService = new MemberProfileService();
     }
     return this.memberProfileService;
+  }
+
+  static getUserService(): UserService {
+    if (!this.userService) {
+      this.userService = new UserService();
+    }
+    return this.userService;
+  }
+
+  static getMachineService(): MachineService {
+    if (!this.machineService) {
+      this.machineService = new MachineService();
+    }
+    return this.machineService;
+  }
+
+  static getMediaService(): MediaService {
+    if (!this.mediaService) {
+      this.mediaService = new MediaService();
+    }
+    return this.mediaService;
   }
 } 

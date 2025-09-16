@@ -104,6 +104,13 @@
   justify-content: center;
   gap: 8px;
   padding: 12px 10px;
+  transition: all 0.2s ease-in-out;
+  border: 2px solid transparent;
+}
+
+.workout-resource-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 12px 0px rgba(53, 53, 53, 0.2);
 }
 
 .workout-resource-icon-wrapper {
@@ -125,6 +132,41 @@
   color: #584769;
   text-align: center;
   line-height: 1.2;
+}
+
+/* Audio playback states */
+.workout-resource-card.playing {
+  background: #E8F5E8;
+  border: 2px solid #03C203;
+}
+
+.workout-resource-card.loading {
+  background: #FFF3E0;
+  border: 2px solid #FF9800;
+}
+
+.workout-resource-card.playing .workout-resource-icon-wrapper {
+  background: #03C203;
+  color: white;
+}
+
+.workout-resource-card.loading .workout-resource-icon-wrapper {
+  background: #FF9800;
+  color: white;
+}
+
+.loading-spinner {
+  font-size: 16px;
+  animation: spin 1s linear infinite;
+}
+
+.playing-indicator {
+  font-size: 16px;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .figma-workout-page-title {
@@ -351,7 +393,7 @@
   border-radius: 6px;
   box-shadow: inset 0px 0px 10.4px 2px rgba(59, 45, 72, 0.5);
   width: fit-content;
-  padding: 16px 24px;
+  padding: 8px 16px;
   color: #fff;
   display: flex;
   align-items: center;
@@ -360,7 +402,8 @@
   font-size: 18px;
 }
 .figma-header-card.outlined {
-  border: 2px solid #584769;
+  border: 2px solid #E9E1F1;
+  padding: 16px 24px;
 }
 .figma-header-plus {
   width: 46px;
@@ -462,7 +505,7 @@
 /* --- Page Container --- */
 .create-workout-page-container {
   min-width: 600px;
-  padding: 30px;
+  padding: 10px 30px;
   /* display: flex; */
   /* flex-direction: column; */
   gap: 0;
@@ -619,12 +662,208 @@
   color: #EA4242;
 }
 
-.table-row .table-col:nth-child(1) { min-width: 2px; justify-content: center; }
-.table-row .table-col:nth-child(2) { min-width: 120px; }
-.table-row .table-col:nth-child(3) { min-width: 80px; }
-.table-row .table-col:nth-child(4) { min-width: 80px; }
-.table-row .table-col:nth-child(5) { min-width: 80px; }
-.table-row .table-col:nth-child(6) { min-width: 120px; }
-.table-row .table-col:nth-child(7) { min-width: 80px; }
-.table-row .table-col:nth-child(8) { min-width: 120px; }
-.table-row .table-col:nth-child(9) { min-width: 80px; justify-content: flex-end; } 
+/* Updated column widths for 5-column layout */
+.table-row .table-col:nth-child(1) { min-width: 40px; justify-content: center; }  /* Interval */
+.table-row .table-col:nth-child(2) { min-width: 140px; }                        /* Prompt */
+.table-row .table-col:nth-child(3) { min-width: 100px; }                        /* Time */
+.table-row .table-col:nth-child(4) { min-width: 100px; }                        /* Metric */
+.table-row .table-col:nth-child(5) { min-width: 80px; justify-content: center; } /* Action */
+
+/* --- Form Row Layout --- */
+.form-row {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.form-row .form-input {
+  max-width: none;
+  width: 100%;
+}
+
+.media-upload-section {
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 8px;
+}
+
+.media-upload-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+  
+.media-file-input {
+  width: 100%;
+  padding: 8px;
+  border: 2px solid #dee2e6;
+  border-radius: 6px;
+  font-family: 'Lato', Arial, sans-serif;
+  font-size: 14px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.media-file-input:focus {
+  outline: none;
+  border-color: #584769;
+  box-shadow: 0px 0px 8px 0px rgba(88, 71, 105, 0.2);
+}
+
+.media-upload-btn {
+  background: #584769;
+  color: #fff;
+  border: 2px solid #584769;
+  border-radius: 6px;
+  font-family: 'Lato', Arial, sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.media-upload-btn:hover:not(:disabled) {
+  background: #76628A;
+  border-color: #76628A;
+}
+
+.media-upload-btn:disabled {
+  background: #6c757d;
+  border-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.selected-file {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: #e3f2fd;
+  border: 1px solid #90caf9;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.file-name {
+  font-family: 'Lato', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1976d2;
+  word-break: break-all;
+}
+
+.file-size {
+  font-family: 'Lato', Arial, sans-serif;
+  font-size: 12px;
+  color: #666;
+}
+
+.uploaded-media-section {
+  margin-top: 24px;
+  padding: 20px;
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+}
+
+.uploaded-media-section h4 {
+  margin: 0 0 16px 0;
+  font-family: 'Lato', Arial, sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #353535;
+}
+
+.media-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.media-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.media-item:hover {
+  border-color: #584769;
+  box-shadow: 0px 2px 8px rgba(88, 71, 105, 0.1);
+}
+
+.media-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.media-name {
+  font-family: 'Lato', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #353535;
+  word-break: break-all;
+}
+
+.media-size {
+  font-family: 'Lato', Arial, sans-serif;
+  font-size: 12px;
+  color: #666;
+}
+
+.remove-media-btn {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  margin-left: 12px;
+  flex-shrink: 0;
+}
+
+.remove-media-btn:hover {
+  background: #c82333;
+  transform: scale(1.1);
+}
+
+/* Responsive design for media upload */
+@media (max-width: 768px) {
+  .form-section {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .form-right {
+    flex: none;
+    width: 100%;
+  }
+  
+  .media-upload-section {
+    min-height: auto;
+  }
+}

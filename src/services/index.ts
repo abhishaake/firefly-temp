@@ -1,51 +1,18 @@
-import { AuthService } from './AuthService';
-import { ClassService } from './ClassService';
-import { WorkoutService } from './WorkoutService';
-import { TrainerService } from './TrainerService';
-import { MemberService } from './MemberService';
+export { API_CONFIG } from './config';
+export { ServiceFactory } from './ServiceFactory';
+export * from './utils';
 
-class ServiceFactory {
-  private static instance: ServiceFactory;
-  private authService: AuthService;
-  private classService: ClassService;
-  private workoutService: WorkoutService;
-  private trainerService: TrainerService;
-  private memberService: MemberService;
+// Re-export individual services for convenience
+export { AuthService } from './AuthService';
+export { ClassService } from './ClassService';
+export { WorkoutService } from './WorkoutService';
+export { TrainerService } from './TrainerService';
+export { MemberService } from './MemberService';
+export { MemberProfileService } from './MemberProfileService';
+export { UserService } from './UserService';
+export { MachineService } from './MachineService';
+export { MediaService } from './MediaService';
 
-  private constructor() {
-    this.authService = new AuthService();
-    this.classService = new ClassService();
-    this.workoutService = new WorkoutService();
-    this.trainerService = new TrainerService();
-    this.memberService = new MemberService();
-  }
-
-  public static getInstance(): ServiceFactory {
-    if (!ServiceFactory.instance) {
-      ServiceFactory.instance = new ServiceFactory();
-    }
-    return ServiceFactory.instance;
-  }
-
-  public getAuthService(): AuthService {
-    return this.authService;
-  }
-
-  public getClassService(): ClassService {
-    return this.classService;
-  }
-
-  public getWorkoutService(): WorkoutService {
-    return this.workoutService;
-  }
-
-  public getTrainerService(): TrainerService {
-    return this.trainerService;
-  }
-
-  public getMemberService(): MemberService {
-    return this.memberService;
-  }
-}
-
-export const services = ServiceFactory.getInstance(); 
+// Export the singleton instance
+import { ServiceFactory } from './ServiceFactory';
+export const services = ServiceFactory; 

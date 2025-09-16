@@ -18,6 +18,9 @@ import { CreateWorkoutPage } from './pages/CreateWorkoutPage';
 import { CreateClassPage } from './pages/CreateClassPage';
 import { EditClassPage } from './pages/EditClassPage';
 import { ViewClassPage } from './pages/VIewClassPage';
+import { CreateUserPage } from './pages/CreateUserPage';
+import { MachinesPage } from './pages/MachinesPage';
+import { CreateEditMachinePage } from './pages/CreateEditMachinePage';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -93,6 +96,46 @@ function App() {
                     {/* <CustomMainLayout> */}
                       <ViewClassPage />
                     {/* </CustomMainLayout> */}
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/create-user"
+                element={
+                  <ProtectedRoute>
+                    <CustomMainLayout>
+                      <CreateUserPage />
+                    </CustomMainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/manage-machines"
+                element={
+                  <ProtectedRoute>
+                    <CustomMainLayout>
+                      <MachinesPage />
+                    </CustomMainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/manage-machines/create"
+                element={
+                  <ProtectedRoute>
+                    <CustomMainLayout>
+                      <CreateEditMachinePage />
+                    </CustomMainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/manage-machines/edit"
+                element={
+                  <ProtectedRoute>
+                    <CustomMainLayout>
+                      <CreateEditMachinePage />
+                    </CustomMainLayout>
                   </ProtectedRoute>
                 }
               />

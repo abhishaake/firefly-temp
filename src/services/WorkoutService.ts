@@ -1,65 +1,51 @@
 import { BaseApiService } from './BaseApiService';
-import type { ApiResponse } from '../types/api';
+import { API_CONFIG } from './config';
+import { transformBackendResponse, createErrorResponse } from './utils';
+import type { ApiResponse, BackendApiResponse } from '../types/api';
 import type { Workout } from '../types/workout';
 import type { WorkoutWrapper } from '../types/workoutWrapper';
 
 export class WorkoutService extends BaseApiService {
   constructor() {
     super({ 
-      baseURL: 'https://firefly-admin.cozmotech.ie/api/v1',
-      timeout: 15000 
+      baseURL: API_CONFIG.getUrl(API_CONFIG.ENDPOINTS.DEFAULT),
+      timeout: API_CONFIG.WORKOUT_TIMEOUT 
     });
   }
 
   async getWorkouts(): Promise<ApiResponse<WorkoutWrapper>> {
     try {
-      return await this.get<WorkoutWrapper>('/workouts');
+      const response = await this.api.get<BackendApiResponse<WorkoutWrapper>>('/dashboard/workouts');
+      return transformBackendResponse(response.data);
     } catch (error: any) {
-      return {
-        data: {} as WorkoutWrapper,
-        status: 500,
-        success: false,
-        message: error.message || 'Error fetching workouts',
-      };
+      return createErrorResponse(error, 'Error fetching workouts', {} as WorkoutWrapper);
     }
   }
 
   async getWorkoutDetails(workoutId: number): Promise<ApiResponse<Workout>> {
     try {
-      return await this.get<Workout>(`/workouts/details?workoutId=${workoutId}`);
+      const response = await this.api.get<BackendApiResponse<Workout>>(`/dashboard/workouts/details?workoutId=${workoutId}`);
+      return transformBackendResponse(response.data);
     } catch (error: any) {
-      return {
-        data: {} as Workout,
-        status: 500,
-        success: false,
-        message: error.message || 'Error fetching workout details',
-      };
+      return createErrorResponse(error, 'Error fetching workout details', {} as Workout);
     }
   }
 
   async createWorkout(workoutData: any): Promise<ApiResponse<any>> {
     try {
-      return await this.post<any>('/workouts', workoutData);
+      const response = await this.api.post<BackendApiResponse<any>>('/dashboard/workouts', workoutData);
+      return transformBackendResponse(response.data);
     } catch (error: any) {
-      return {
-        data: null,
-        status: 500,
-        success: false,
-        message: error.message || 'Error creating workout',
-      };
+      return createErrorResponse(error, 'Error creating workout', null);
     }
   }
 
   async updateWorkout(workoutId: number, workoutData: any): Promise<ApiResponse<any>> {
     try {
-      return await this.put<any>(`/workouts/${workoutId}/complete`, workoutData);
+      const response = await this.api.put<BackendApiResponse<any>>(`/dashboard/workouts/${workoutId}/complete`, workoutData);
+      return transformBackendResponse(response.data);
     } catch (error: any) {
-      return {
-        data: null,
-        status: 500,
-        success: false,
-        message: error.message || 'Error updating workout',
-      };
+      return createErrorResponse(error, 'Error updating workout', null);
     }
   }
 } 

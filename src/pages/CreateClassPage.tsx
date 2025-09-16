@@ -87,7 +87,7 @@ export const CreateClassPage: React.FC = () => {
     // Convert date and time to epoch (seconds)
     const date = startDateTime ? startDateTime.toISOString().slice(0, 10) : '';
     const startEpoch = startDateTime ? Math.floor(startDateTime.getTime() / 1000) : undefined;
-    const endEpoch = startEpoch + 2700;
+    const endEpoch = startEpoch + 360;
     const payload = {
       className,
       description,
@@ -171,7 +171,7 @@ export const CreateClassPage: React.FC = () => {
   // AssignGymLocationSection as inner component to access setSelectedGymLocationId
   const AssignGymLocationSection: React.FC = () => {
     const { data, isLoading, error } = useGymLocationsQuery();
-    const gymLocations = data?.data || [];
+    const gymLocations = data?.locations || [];
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const selectedGymLocation = gymLocations.find((g: any) => g.id === selectedGymLocationId);
 

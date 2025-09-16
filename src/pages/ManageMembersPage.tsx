@@ -42,8 +42,6 @@ export const ManageMembersPage: React.FC = () => {
     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
   };
 
-
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // Update API search term and reset to first page

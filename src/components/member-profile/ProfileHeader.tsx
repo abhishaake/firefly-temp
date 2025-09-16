@@ -39,12 +39,12 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userInfo }) => {
           <h2 className="personal-info-title">Personal Information</h2>
           <div className="personal-info-grid">
             <div className="personal-info-column">
-              <p className="personal-info-item">Age - {userInfo.age}</p>
-              <p className="personal-info-item">Weight - {userInfo.weight}</p>
+              <p className="personal-info-item">Age - {userInfo.age || 'N/A'}</p>
+              <p className="personal-info-item">Weight - {userInfo.weight || 'N/A'}</p>
             </div>
             <div className="personal-info-column">
-              <p className="personal-info-item">Sex - {userInfo.gender}</p>
-              <p className="personal-info-item">Height - {userInfo.height}</p>
+              <p className="personal-info-item">Sex - {userInfo.gender || 'N/A'}</p>
+              <p className="personal-info-item">Height - {userInfo.height || 'N/A'}</p>
             </div>
           </div>
         </div>

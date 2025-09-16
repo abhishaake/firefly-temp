@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import type { UseQueryOptions, UseMutationOptions } from '@tanstack/react-query';
 import type { ApiResponse } from '../types/api';
 import { services } from '../services';
-import type { ClassItem } from '../types/class';
+import type { ClassesResponseData, ClassItem } from '../types/class';
 
 interface UseApiOptions<TData, TVariables> {
   queryKey: string[];
@@ -39,7 +39,7 @@ export function useApiMutation<TData, TVariables>({
 }
 
 export function useAvailableClassesQuery() {
-  return useQuery<ClassItem[]>({
+  return useQuery<ClassesResponseData>({
     queryKey: ['available-classes'],
     queryFn: () => services.getClassService().getAvailableClasses().then(res => res.data),
   });

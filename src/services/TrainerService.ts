@@ -1,4 +1,6 @@
 import { BaseApiService } from './BaseApiService';
+import { API_CONFIG } from './config';
+import { createErrorResponse } from './utils';
 import type { Trainer, CreateTrainerRequest, UpdateTrainerRequest } from '../types/trainer';
 import type { ApiResponse } from '../types/api';
 
@@ -18,8 +20,8 @@ interface ApiTrainerResponse {
 export class TrainerService extends BaseApiService {
   constructor() {
     super({
-      baseURL: 'https://firefly-admin.cozmotech.ie',
-      timeout: 15000,
+      baseURL: API_CONFIG.getUrl(API_CONFIG.ENDPOINTS.DEFAULT),
+      timeout: API_CONFIG.DEFAULT_TIMEOUT,
     });
   }
 
@@ -41,7 +43,7 @@ export class TrainerService extends BaseApiService {
 
   async getAllTrainers(search: string = ''): Promise<ApiResponse<Trainer[]>> {
     try {
-      const response = await this.api.get<ApiTrainerResponse>(`/api/v1/dashboard/trainers?name=${search}`);
+      const response = await this.api.get<ApiTrainerResponse>(`/dashboard/trainers?name=${search}`);
 
       const trainers = response.data.data.panelUsers.map((apiTrainer, index) =>
         this.transformApiTrainerToTrainer(apiTrainer, index)
@@ -51,29 +53,10 @@ export class TrainerService extends BaseApiService {
         data: trainers,
         status: response.data.statusCode,
         message: response.data.message,
+        success: response.data.success,
       };
     } catch (error) {
       throw new Error(`Failed to fetch trainers: ${error}`);
     }
-  }
-
-  async getTrainerById(id: string): Promise<ApiResponse<Trainer>> {
-    // TODO: Implement when API endpoint is available
-    throw new Error('getTrainerById API endpoint not implemented');
-  }
-
-  async createTrainer(trainer: CreateTrainerRequest): Promise<ApiResponse<Trainer>> {
-    // TODO: Implement when API endpoint is available
-    throw new Error('createTrainer API endpoint not implemented');
-  }
-
-  async updateTrainer(trainer: UpdateTrainerRequest): Promise<ApiResponse<Trainer>> {
-    // TODO: Implement when API endpoint is available
-    throw new Error('updateTrainer API endpoint not implemented');
-  }
-
-  async deleteTrainer(id: string): Promise<ApiResponse<void>> {
-    // TODO: Implement when API endpoint is available
-    throw new Error('deleteTrainer API endpoint not implemented');
   }
 } 

@@ -4,8 +4,10 @@ import { TrainerTable } from '../components/trainer/TrainerTable';
 import { services } from '../services';
 import type { Trainer } from '../types/trainer';
 import '../styles/manage-trainer.css';
+import { useNavigate } from 'react-router-dom';
 
 export const ManageTrainerPage: React.FC = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [apiSearchTerm, setApiSearchTerm] = useState('');
@@ -30,6 +32,9 @@ export const ManageTrainerPage: React.FC = () => {
   }, [trainers, searchTerm, sortOrder]);
 
 
+  const handleCreateUser = () => {
+    navigate('/create-user');
+  };
 
   const handleViewProfile = (trainerId: string) => {
     console.log('View profile for trainer:', trainerId);
@@ -102,7 +107,13 @@ export const ManageTrainerPage: React.FC = () => {
             </svg>
             Sort
           </button> */}
+          <div className="manage-trainers-table-container">
+            <button className="manage-trainers-create-user-btn" onClick={handleCreateUser}>
+              Create User
+            </button>
+          </div>
         </div>
+        
       </div>
 
       <TrainerTable

@@ -11,6 +11,7 @@ export const ManageClassesPage: React.FC = () => {
 
   const handleEdit = (id: string) => {
     // open edit modal
+    navigate(`/classes/edit/${id}`)
   };
 
   const handleDelete = (id: string) => {

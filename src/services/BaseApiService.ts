@@ -1,20 +1,23 @@
 import axios from 'axios';
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import type { ApiResponse, ApiError, ApiConfig } from '../types/api';
+import { API_CONFIG } from './config';
 
 export class BaseApiService {
   protected api: AxiosInstance;
 
-  constructor(config: ApiConfig) {
-    this.api = axios.create({
-      baseURL: config.baseURL,
-      timeout: config.timeout || 30000,
+  constructor(config?: Partial<ApiConfig>) {
+    // Use centralized config with optional overrides
+    const finalConfig: ApiConfig = {
+      baseURL: config?.baseURL || API_CONFIG.BASE_URL,
+      timeout: config?.timeout || API_CONFIG.DEFAULT_TIMEOUT,
       headers: {
         'Content-Type': 'application/json',
-        ...config.headers,
+        ...config?.headers,
       },
-    });
+    };
 
+    this.api = axios.create(finalConfig);
     this.setupInterceptors();
   }
 
@@ -26,7 +29,7 @@ export class BaseApiService {
           console.log('Login request - skipping Authorization header');
           return config;
         }
-        
+
         const token = localStorage.getItem('auth_token');
         console.log('Token from localStorage:', token ? 'Token exists' : 'No token found');
         if (token) {
@@ -57,9 +60,9 @@ export class BaseApiService {
   protected handleError(error: any): ApiError {
     if (error.response) {
       return {
-        message: error.response.data.message || 'An error occurred',
-        status: error.response.status,
-        errors: error.response.data.errors,
+        message: error.response.data?.displayMessage || 'An error occurred',
+        status: error.response.status.toString(),
+        errors: error.response.data?.errors,
       };
     }
     return {
@@ -69,27 +72,64 @@ export class BaseApiService {
   }
 
   protected async get<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-    const response: AxiosResponse<ApiResponse<T>> = await this.api.get(url, config);
-    return response.data;
+    try {
+      const response: AxiosResponse<ApiResponse<T>> = await this.api.get(url, config);
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
   }
 
   protected async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-    const response: AxiosResponse<ApiResponse<T>> = await this.api.post(url, data, config);
-    return response.data;
+    try {
+      const response: AxiosResponse<ApiResponse<T>> = await this.api.post(url, data, config);
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
   }
 
   protected async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-    const response: AxiosResponse<ApiResponse<T>> = await this.api.put(url, data, config);
-    return response.data;
+    try {
+      const response: AxiosResponse<ApiResponse<T>> = await this.api.put(url, data, config);
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
   }
 
   protected async delete<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-    const response: AxiosResponse<ApiResponse<T>> = await this.api.delete(url, config);
-    return response.data;
+    try {
+      const response: AxiosResponse<ApiResponse<T>> = await this.api.delete(url, config);
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
   }
 
   protected async patch<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-    const response: AxiosResponse<ApiResponse<T>> = await this.api.patch(url, data, config);
-    return response.data;
+    try {
+      const response: AxiosResponse<ApiResponse<T>> = await this.api.patch(url, data, config);
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
+  }
+
+  protected async uploadFile<T>(url: string, formData: FormData, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+    try {
+      const uploadConfig: AxiosRequestConfig = {
+        ...config,
+        headers: {
+          ...config?.headers,
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+      
+      const response: AxiosResponse<ApiResponse<T>> = await this.api.post(url, formData, uploadConfig);
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
   }
 } 

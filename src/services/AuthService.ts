@@ -1,26 +1,38 @@
 import { BaseApiService } from './BaseApiService';
-import type { ApiResponse, LoginRequest, LoginResponse, LoginApiResponse } from '../types/api';
+import { API_CONFIG } from './config';
+import { transformBackendResponse, createErrorResponse } from './utils';
+import type { ApiResponse, LoginRequest, LoginResponse, LoginApiResponse, BackendApiResponse } from '../types/api';
 
 export class AuthService extends BaseApiService {
   constructor() {
-    super({ 
-      baseURL: 'https://firefly-admin.cozmotech.ie/api/app/auth',
-      timeout: 10000 
+    super({
+      baseURL: API_CONFIG.getUrl(API_CONFIG.ENDPOINTS.AUTH),
+      timeout: API_CONFIG.AUTH_TIMEOUT
     });
   }
 
   async signIn(credentials: LoginRequest): Promise<LoginApiResponse> {
     console.log('AuthService.signIn called with:', credentials);
-    const response = await this.post<LoginResponse>('/dashboard/signIn', credentials);
-    console.log('AuthService.signIn response:', response);
-    return response;
+    const response = await this.api.post<BackendApiResponse<LoginResponse>>('/signIn', credentials);
+
+    // Transform the backend response to our standard ApiResponse format
+    const transformedResponse: LoginApiResponse = {
+      data: response.data.data,
+      status: response.data.statusCode,
+      message: response.data.message,
+      success: response.data.success,
+    };
+
+    console.log('AuthService.signIn response:', transformedResponse);
+    return transformedResponse;
   }
 
   async signOut(): Promise<ApiResponse<void>> {
-    return this.post<void>('/signOut');
-  }
-
-  async refreshToken(): Promise<ApiResponse<{ token: string }>> {
-    return this.post<{ token: string }>('/refresh');
+    try {
+      const response = await this.api.post<BackendApiResponse<void>>('/signOut');
+      return transformBackendResponse(response.data);
+    } catch (error: any) {
+      return createErrorResponse(error, 'Error signing out', undefined);
+    }
   }
 } 

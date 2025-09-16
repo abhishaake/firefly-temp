@@ -5,6 +5,15 @@ export interface ApiResponse<T> {
   success: boolean;
 }
 
+// New interface for the actual backend API response structure
+export interface BackendApiResponse<T> {
+  data: T;
+  success: boolean;
+  statusCode: number;
+  message: string;
+  displayMessage: string;
+}
+
 export interface PaginatedResponse<T> extends ApiResponse<T> {
   total: number;
   page: number;
